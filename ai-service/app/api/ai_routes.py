@@ -17,7 +17,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 
 from app.core.auth import User, get_current_user
-from app.core.rate_limit import enforce_rate_limit
+from app.core.rate_limiter import chat_rate_limiter
 from app.core.rbac import require_permission
 from app.core.security import sanitize_prompt
 from app.core.usage import (
@@ -93,7 +93,7 @@ async def chat(
     request: Request,
     body: ChatBody,
     current_user: User = Depends(get_current_user),
-    _rate_limited: None = Depends(enforce_rate_limit),
+    _rate_limited: None = Depends(chat_rate_limiter.check_rate_limit),
 ):
     # Sanitize prompt or messages
     try:
@@ -199,7 +199,7 @@ async def chat(
 async def generate_image(
     body: ImageGenerationRequest,
     current_user: User = Depends(get_current_user),
-    _rate_limited: None = Depends(enforce_rate_limit),
+    _rate_limited: None = Depends(chat_rate_limiter.check_rate_limit),
 ):
     usage = await get_today_usage(current_user.id)
     if usage >= DAILY_AI_LIMIT:
