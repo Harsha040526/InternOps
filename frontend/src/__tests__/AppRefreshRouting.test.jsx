@@ -38,6 +38,7 @@ describe('refresh loading and route preservation contract', () => {
     const pages = [
       read('src/pages/admin/AdminDashboard.jsx'),
       read('src/pages/admin/Departments.jsx'),
+      read('src/pages/admin/ProjectsPage.jsx'),
       read('src/pages/Home.jsx'),
       read('src/pages/Team.jsx'),
       read('src/pages/HR.jsx'),
@@ -455,6 +456,25 @@ describe('refresh loading and route preservation contract', () => {
     expect(skeleton).toContain('min-h-[260px]');
   });
 
+  it('keeps the department hierarchy skeleton mounted until projects data is ready', () => {
+    const layout = read('src/layouts/DashboardLayout.jsx');
+    const projects = read('src/pages/admin/ProjectsPage.jsx');
+    expect(layout).toContain('COORDINATED_LOADING_ROUTE_PATTERNS');
+    expect(layout).toContain('/^\\/departments\\/[^/]+\\/projects$/');
+    expect(projects).toContain('useRouteInitialLoading(');
+    expect(projects).toContain(
+      'isLoading || (departmentsLoading && departments.length === 0)'
+    );
+    expect(projects).not.toContain('{isLoading ? (');
+    expect(projects).not.toContain('<Spinner />');
+    expect(skeleton).toContain('function DepartmentProjectsSkeleton()');
+    expect(skeleton).toContain("kind === 'department-projects'");
+    expect(skeleton).toContain('h-[40px] w-[197px] rounded-2xl');
+    expect(skeleton).toContain('h-[194px]');
+    expect(skeleton).toContain('h-11 w-11 shrink-0 rounded-2xl');
+    expect(skeleton).toContain('dark:!bg-slate-800');
+    expect(skeleton).toContain('Array.from({ length: 3 }');
+  });
   it('coordinates Departments loading and matches the department-card workspace', () => {
     const layout = read('src/layouts/DashboardLayout.jsx');
     const departments = read('src/pages/admin/Departments.jsx');

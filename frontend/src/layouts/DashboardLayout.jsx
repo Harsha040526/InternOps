@@ -234,6 +234,7 @@ const COORDINATED_LOADING_ROUTES = new Set([
   '/exports',
   '/notices',
 ]);
+const COORDINATED_LOADING_ROUTE_PATTERNS = [/^\/departments\/[^/]+\/projects$/];
 
 function canShowNavItem(item, role, flags, flagsLoaded) {
   if (item.excludedRoles && item.excludedRoles.includes(role)) return false;
@@ -853,7 +854,10 @@ export default function DashboardLayout() {
         )}
         <main className="flex-1 overflow-auto p-5 sm:p-6">
           <div key={loc.pathname} className="min-h-[calc(100vh-7rem)]">
-            {COORDINATED_LOADING_ROUTES.has(loc.pathname) ? (
+            {COORDINATED_LOADING_ROUTES.has(loc.pathname) ||
+            COORDINATED_LOADING_ROUTE_PATTERNS.some((pattern) =>
+              pattern.test(loc.pathname)
+            ) ? (
               <RouteInitialLoading animate={shouldAnimateRoute}>
                 <Outlet />
               </RouteInitialLoading>

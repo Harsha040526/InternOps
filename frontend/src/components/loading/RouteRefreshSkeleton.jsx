@@ -948,6 +948,82 @@ function NoticeBlock({ className = '' }) {
     <Block className={`!animate-[pulse_2s_linear_infinite] ${className}`} />
   );
 }
+function DepartmentProjectsSkeleton() {
+  return (
+    <div>
+      {/* Back to Departments button */}
+      <Block className="mb-4 h-[40px] w-[197px] rounded-2xl" />
+
+      {/* Department header */}
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-4">
+          {/* Department header icon */}
+          <Block className="h-12 w-12 shrink-0 rounded-2xl" />
+
+          <div>
+            {/* Department title */}
+            <Block className="-mt-1 h-12 w-[350px] max-w-[62vw] rounded-xl" />
+
+            {/* Department subtitle */}
+            <Block className="mt-3 h-5 w-[490px] max-w-[72vw] rounded-md" />
+          </div>
+        </div>
+
+        {/* Replace Senior TL button */}
+        <Block className="-mt-10 h-[40px] w-[172px] rounded-2xl" />
+      </div>
+
+      {/* Department hierarchy cards */}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        {Array.from({ length: 3 }, (_, index) => (
+          <Card
+            key={index}
+            className="h-[194px] border border-slate-200 p-5 dark:border-slate-700/80 dark:!bg-slate-800"
+          >
+            <div className="flex h-full items-start justify-between gap-4">
+              <div className="flex h-full min-w-0 flex-1 flex-col">
+                {/* Lead information */}
+                <div className="mb-3 flex items-center gap-3">
+                  {/* Lead avatar */}
+                  <Block className="h-11 w-11 shrink-0 rounded-2xl" />
+
+                  <div className="min-w-0 flex-1">
+                    {/* Lead name */}
+                    <Block className="h-6 w-[210px] max-w-full rounded-md" />
+
+                    {/* Lead role badge */}
+                    <Block className="mt-2 h-7 w-[88px] rounded-full" />
+                  </div>
+                </div>
+
+                {/* Member information section */}
+                <div className="mt-auto flex flex-col justify-start gap-3 border-t border-slate-700/70 pt-4">
+                  {/* Member count */}
+                  <Block className="h-5 w-[160px] rounded-md" />
+
+                  {/* Team breakdown badges */}
+                  <div className="flex flex-wrap items-start gap-2">
+                    {/* TL count */}
+                    <Block className="h-7 w-[42px] rounded-lg" />
+
+                    {/* Captain count */}
+                    <Block className="h-7 w-[90px] rounded-lg" />
+
+                    {/* Intern count */}
+                    <Block className="h-7 w-[86px] rounded-lg" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Users icon on the right */}
+              <Block className="h-5 w-5 shrink-0 rounded-md" />
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
 function DepartmentsSkeleton() {
   return (
     <div>
@@ -1595,18 +1671,7 @@ export default function RouteRefreshSkeleton() {
       </>
     );
   else if (kind === 'department-projects')
-    body = (
-      <>
-        <Header />
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {Array.from({ length: 3 }, (_, i) => (
-            <Card key={i} className="h-64 p-5">
-              <Lines count={6} />
-            </Card>
-          ))}
-        </div>
-      </>
-    );
+    body = <DepartmentProjectsSkeleton />;
   else if (kind === 'task-detail') body = <TaskDetails />;
   else if (kind === 'ai-certificates') body = <FormPage tabs />;
   else if (['quick-generate', 'bulk-generate'].includes(kind))
