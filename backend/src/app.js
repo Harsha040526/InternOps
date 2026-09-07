@@ -17,7 +17,11 @@ const pool = require('./config/db');
 const metrics = require('./utils/metrics');
 const { initializeWebSocket, getIO } = require('./websocket');
 const noticesRoutes = require('./modules/notices/routes');
-const { getRedisStatus, getRedisClient } = require('./config/redis');
+const {
+  getRedisStatus,
+  getRedisClient,
+  getRedisDegradedFeatures,
+} = require('./config/redis');
 const { csrfMiddleware } = require('./middleware/csrf');
 const { sanitizationMiddleware } = require('./middleware/sanitize');
 const { createAuditLog } = require('./utils/audit');
@@ -487,12 +491,13 @@ const start = async () => {
       host: config.host,
     });
     initializeWebSocket(app.server, app.log);
-    await bulkJobQueue.init();
     await getRedisClient();
+    await bulkJobQueue.init();
     writeStartupSummary({
       logger: app.log,
       database,
       redis: getRedisStatus(),
+      degradedFeatures: getRedisDegradedFeatures(),
       queue: bulkJobQueue.getStatus(),
       integrations: integrationStatus(config),
       port: config.port,
