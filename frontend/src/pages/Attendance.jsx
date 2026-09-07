@@ -10,6 +10,7 @@ import CustomSelect from '../components/CustomSelect';
 import { ApiErrorState } from '../components/ui';
 import { ROLE_LABEL } from '../constants/roles';
 import DepartmentAttendanceSheet from '../components/department/DepartmentAttendanceSheet';
+import { useRouteInitialLoading } from '../components/loading/RouteInitialLoading';
 
 function monthRange(month, today) {
   const [year, monthNumber] = month.split('-').map(Number);
@@ -191,6 +192,7 @@ export default function Attendance({
   const totalPages = Math.max(Math.ceil(total / limit), 1);
 
   const effectiveTeam = isProjectView ? roster : team;
+  useRouteInitialLoading(isProjectView && isLoading && !data);
 
   useEffect(() => {
     if (isProjectView || team.length === 0) return;
@@ -418,7 +420,7 @@ export default function Attendance({
                 />
               </div>
             )}
-            {!viewAll && isLoading && (
+            {!isProjectView && !viewAll && isLoading && (
               <div className="flex justify-center p-8 mb-5">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600" />
               </div>
@@ -641,7 +643,7 @@ export default function Attendance({
                 />
               </div>
             )}
-            {!viewAll && isLoading && (
+            {!isProjectView && !viewAll && isLoading && (
               <div className="flex justify-center p-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600" />
               </div>

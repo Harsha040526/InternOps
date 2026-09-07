@@ -948,6 +948,89 @@ function NoticeBlock({ className = '' }) {
     <Block className={`!animate-[pulse_2s_linear_infinite] ${className}`} />
   );
 }
+function ProjectDetailSkeleton() {
+  return (
+    <div>
+      {/* Back to Department button */}
+      <Block className="mb-4 h-[40px] w-[190px] rounded-2xl" />
+
+      {/* Project Detail header */}
+      <div className="mb-7 flex items-center gap-4">
+        {/* Header icon */}
+        <Block className="h-12 w-12 shrink-0 rounded-2xl" />
+        <div>
+          {/* Lead name */}
+          <Block className="h-12 w-[320px] max-w-[62vw] rounded-xl" />
+          {/* Department and page description */}
+          <Block className="mt-3 h-5 w-[300px] max-w-[72vw] rounded-md" />
+        </div>
+      </div>
+
+      {/* Hierarchy summary outer Card uses the shared real Card surface */}
+      <Card className="-mt-1 mb-5 p-5 md:flex md:h-[112px] md:items-center">
+        <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-3">
+          {Array.from({ length: 3 }, (_, index) => (
+            <div
+              key={index}
+              className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/40"
+            >
+              {/* Summary label */}
+              <Block className="h-3 w-24 rounded-md" />
+              {/* Summary value */}
+              <Block
+                className={`mt-3 h-7 rounded-md ${
+                  index === 0 ? 'w-48' : index === 1 ? 'w-28' : 'w-12'
+                }`}
+              />
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Attendance and Ratings tabs */}
+      <div className="mb-5 flex flex-wrap gap-2">
+        <Block className="h-[40px] w-[147px] rounded-2xl" />
+        <Block className="h-[40px] w-[120px] rounded-2xl" />
+      </div>
+
+      {/* Attendance controls use the exact real card surface and border */}
+      <div className="mb-5 rounded-3xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900 md:p-6">
+        {/* View attendance for label */}
+        <Block className="mb-3 h-4 w-[150px] rounded-md" />
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          {/* Member select */}
+          <Block className="h-[51px] w-full rounded-2xl sm:max-w-[430px]" />
+          {/* View all attendance button */}
+          <Block className="h-[41px] w-[190px] rounded-xl" />
+        </div>
+      </div>
+
+      {/* Attendance table uses the exact real shell surface and border */}
+      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+        {/* Exact real table-header surface */}
+        <div className="grid h-[54px] grid-cols-3 items-center border-b border-slate-200 bg-slate-50 px-6 dark:border-slate-700 dark:bg-slate-950">
+          <Block className="h-5 w-16 rounded-md" />
+          <Block className="h-5 w-16 rounded-md" />
+          <Block className="mx-auto h-5 w-20 rounded-md" />
+        </div>
+        {Array.from({ length: 3 }, (_, index) => (
+          <div
+            key={index}
+            className={`grid h-[64px] grid-cols-3 items-center border-b border-slate-100 px-6 last:border-0 dark:border-slate-700 ${
+              index % 2 === 0
+                ? 'bg-white dark:bg-slate-900'
+                : 'bg-slate-50/50 dark:bg-slate-800/35'
+            }`}
+          >
+            <Block className="h-5 w-28 rounded-md" />
+            <Block className="h-7 w-24 rounded-full" />
+            <Block className="mx-auto h-5 w-5 rounded-md" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 function DepartmentProjectsSkeleton() {
   return (
     <div>
@@ -1663,13 +1746,7 @@ export default function RouteRefreshSkeleton() {
   else if (kind === 'department-attendance') body = <Attendance department />;
   else if (kind === 'department-ratings') body = <Ratings department />;
   else if (kind === 'department-tasks') body = <Tasks department />;
-  else if (kind === 'project-detail')
-    body = (
-      <>
-        <Header actions={0} />
-        <Attendance project />
-      </>
-    );
+  else if (kind === 'project-detail') body = <ProjectDetailSkeleton />;
   else if (kind === 'department-projects')
     body = <DepartmentProjectsSkeleton />;
   else if (kind === 'task-detail') body = <TaskDetails />;

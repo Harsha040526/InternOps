@@ -39,6 +39,7 @@ describe('refresh loading and route preservation contract', () => {
       read('src/pages/admin/AdminDashboard.jsx'),
       read('src/pages/admin/Departments.jsx'),
       read('src/pages/admin/ProjectsPage.jsx'),
+      read('src/pages/admin/ProjectDetailPage.jsx'),
       read('src/pages/Home.jsx'),
       read('src/pages/Team.jsx'),
       read('src/pages/HR.jsx'),
@@ -456,6 +457,35 @@ describe('refresh loading and route preservation contract', () => {
     expect(skeleton).toContain('min-h-[260px]');
   });
 
+  it('keeps the exact Project Detail skeleton until hierarchy and attendance data are ready', () => {
+    const layout = read('src/layouts/DashboardLayout.jsx');
+    const detail = read('src/pages/admin/ProjectDetailPage.jsx');
+    const attendance = read('src/pages/Attendance.jsx');
+    expect(layout).toContain('/^\\/departments\\/[^/]+\\/projects\\/[^/]+$/');
+    expect(detail).toContain('useRouteInitialLoading(isLoading)');
+    expect(detail).not.toContain(') : isLoading ? (');
+    expect(detail).not.toContain('<Spinner />');
+    expect(detail).toContain(' · roster, attendance, and ratings');
+    expect(attendance).toContain(
+      'useRouteInitialLoading(isProjectView && isLoading && !data)'
+    );
+    expect(attendance).toContain('!isProjectView && !viewAll && isLoading');
+    expect(skeleton).toContain('function ProjectDetailSkeleton()');
+    expect(skeleton).toContain("kind === 'project-detail'");
+    expect(skeleton).toContain('h-[40px] w-[190px] rounded-2xl');
+    expect(skeleton).toContain('grid w-full grid-cols-1 gap-3 md:grid-cols-3');
+    expect(skeleton).toContain(
+      'border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/40'
+    );
+    expect(skeleton).toContain(
+      'border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900 md:p-6'
+    );
+    expect(skeleton).toContain(
+      'border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900'
+    );
+    expect(skeleton).toContain('dark:bg-slate-800/35');
+    expect(skeleton).toContain('h-[51px] w-full rounded-2xl sm:max-w-[430px]');
+  });
   it('keeps the department hierarchy skeleton mounted until projects data is ready', () => {
     const layout = read('src/layouts/DashboardLayout.jsx');
     const projects = read('src/pages/admin/ProjectsPage.jsx');

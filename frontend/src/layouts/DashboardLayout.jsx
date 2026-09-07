@@ -234,7 +234,10 @@ const COORDINATED_LOADING_ROUTES = new Set([
   '/exports',
   '/notices',
 ]);
-const COORDINATED_LOADING_ROUTE_PATTERNS = [/^\/departments\/[^/]+\/projects$/];
+const COORDINATED_LOADING_ROUTE_PATTERNS = [
+  /^\/departments\/[^/]+\/projects$/,
+  /^\/departments\/[^/]+\/projects\/[^/]+$/,
+];
 
 function canShowNavItem(item, role, flags, flagsLoaded) {
   if (item.excludedRoles && item.excludedRoles.includes(role)) return false;
