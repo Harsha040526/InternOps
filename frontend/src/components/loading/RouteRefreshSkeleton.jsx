@@ -27,28 +27,6 @@ function Card({ children, className = '' }) {
     </div>
   );
 }
-function PageHeading({ action = false, compact = false }) {
-  return (
-    <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex items-center gap-4">
-        {!compact && <Block className="h-12 w-12 shrink-0 rounded-2xl" />}
-        <div className="space-y-2">
-          <Block className="h-3 w-28" />
-          <Block
-            className={`${compact ? 'h-12 w-96 max-w-[72vw]' : 'h-8 w-56'}`}
-          />
-          <Block className="h-4 w-[34rem] max-w-[76vw]" />
-        </div>
-      </div>
-      {action && (
-        <div className="flex gap-2">
-          <Block className="h-11 w-32" />
-          <Block className="h-11 w-36" />
-        </div>
-      )}
-    </div>
-  );
-}
 function Lines({ count = 4 }) {
   return (
     <div className="space-y-3">
@@ -239,7 +217,7 @@ function TableShape({ cols = 5, rows = 6 }) {
 }
 function Context() {
   return (
-    <div className="mb-6 flex flex-col gap-4 rounded-3xl border border-indigo-500/20 bg-indigo-950 p-4 md:flex-row md:items-center md:justify-between">
+    <div className="mb-8 flex flex-col gap-4 rounded-3xl border border-indigo-500/20 bg-indigo-950 p-5 md:flex-row md:items-center md:justify-between">
       <div className="flex gap-3">
         <Block className="h-10 w-10 rounded-2xl" />
         <div className="space-y-2">
@@ -248,9 +226,10 @@ function Context() {
         </div>
       </div>
       <div className="flex flex-wrap gap-2">
-        {Array.from({ length: 4 }, (_, i) => (
-          <Block key={i} className="h-9 w-24" />
-        ))}
+        <Block className="h-8 w-24 rounded-xl" />
+        <Block className="h-8 w-16 rounded-xl" />
+        <Block className="h-8 w-16 rounded-xl" />
+        <Block className="h-8 w-[136px] rounded-xl" />
       </div>
     </div>
   );
@@ -433,10 +412,10 @@ function Tasks({ department = false }) {
             <Block className="h-4 w-64 max-w-[70vw] rounded-lg" />
           </div>
         </div>
-        <Block className="mt-3.5 h-11 w-36 rounded-2xl" />
+        <Block className="-mt-2 h-9 w-32 rounded-2xl" />
       </div>
-      <div className="mt-9 grid grid-cols-1 items-start gap-5 xl:grid-cols-2">
-        {Array.from({ length: 4 }, (_, index) => (
+      <div className="grid grid-cols-1 items-start gap-5 xl:grid-cols-2">
+        {Array.from({ length: 2 }, (_, index) => (
           <Card key={index} className="h-[216px] self-start p-5 md:p-6">
             <div className="flex items-start gap-4">
               <Block className="h-12 w-12 shrink-0 rounded-2xl" />
@@ -448,14 +427,20 @@ function Tasks({ department = false }) {
                     <Block className="h-6 w-16 rounded-full" />
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
-                    <Block className="h-7 w-7 rounded-xl" />
-                    <Block className="h-7 w-7 rounded-xl" />
+                    <Block className="h-5 w-5 rounded-md" />
+                    <Block className="h-5 w-5 rounded-md" />
                   </div>
                 </div>
                 <Block className="mt-3 h-4 w-40 rounded-lg" />
                 <div className="mt-5 flex flex-wrap items-center gap-3">
-                  <Block className="h-4 w-20 rounded-md" />
-                  <Block className="h-4 w-44 rounded-md" />
+                  <div className="flex items-center gap-2">
+                    <Block className="h-4 w-4 rounded-md" />
+                    <Block className="h-4 w-20 rounded-md" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Block className="h-4 w-4 rounded-full" />
+                    <Block className="h-4 w-44 rounded-md" />
+                  </div>
                 </div>
               </div>
             </div>

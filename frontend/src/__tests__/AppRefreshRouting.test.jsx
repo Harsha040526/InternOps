@@ -322,17 +322,40 @@ describe('refresh loading and route preservation contract', () => {
       "import { useRouteInitialLoading } from '../components/loading/RouteInitialLoading';"
     );
     expect(tasks).toContain('useRouteInitialLoading(');
-    expect(tasks).toContain('isLoading || !tasks');
+    expect(tasks).toContain('isLoading ||');
+    expect(tasks).toContain('!tasks ||');
+    expect(tasks).toContain('isLoading: departmentsLoading');
+    expect(tasks).toContain('isFetchedAfterMount,');
+    expect(tasks).toContain('const departmentTasksInitialLoading =');
+    expect(tasks).toContain(
+      'isAdmin && departmentsLoading && !activeDepartment'
+    );
+    expect(tasks).toContain(
+      'const hasCachedTasks = Array.isArray(tasks) && tasks.length > 0;'
+    );
+    expect(tasks).toContain('!hasCachedTasks && !isFetchedAfterMount');
+    expect(tasks).not.toContain('isFetching && (!tasks || tasks.length === 0)');
+    expect(tasks).toContain('departmentTasksInitialLoading)');
+    expect(tasks).toContain('if (departmentTasksInitialLoading) return null;');
+    const tasksGuardIndex = tasks.indexOf(
+      'if (departmentTasksInitialLoading) return null;'
+    );
+    const tasksHandlerIndex = tasks.indexOf('const handleFileSelect');
+    const tasksMainReturnIndex = tasks.indexOf('return (', tasksHandlerIndex);
+    expect(tasksHandlerIndex).toBeLessThan(tasksGuardIndex);
+    expect(tasksGuardIndex).toBeLessThan(tasksMainReturnIndex);
     expect(tasks).toContain('enabled: hydrated && !!accessToken');
     expect(tasks).not.toContain('animate-pulse h-48');
     expect(tasks).not.toContain('{isLoading ? (');
 
     expect(skeleton).toContain('function Tasks({ department = false })');
+    expect(skeleton).toContain('Array.from({ length: 2 }');
     expect(skeleton).toContain('h-[216px] self-start p-5 md:p-6');
+    expect(skeleton).toContain('h-11 w-36 rounded-2xl');
     expect(skeleton).toContain('h-12 w-12 shrink-0 rounded-2xl');
     expect(skeleton).toContain('h-6 w-20 rounded-full');
     expect(skeleton).toContain('h-6 w-16 rounded-full');
-    expect(skeleton).toContain('h-7 w-7 rounded-xl');
+    expect(skeleton).toContain('h-5 w-5 rounded-md');
     expect(skeleton).toContain('border-t border-slate-200 pt-4');
     expect(skeleton).toContain('h-10 w-40 rounded-2xl');
     expect(skeleton).toContain('h-10 w-32 rounded-2xl');
@@ -463,6 +486,7 @@ describe('refresh loading and route preservation contract', () => {
     const ratings = read('src/pages/Ratings.jsx');
     expect(layout).toContain('/^\\/admin\\/departments\\/[^/]+\\/attendance$/');
     expect(layout).toContain('/^\\/admin\\/departments\\/[^/]+\\/ratings$/');
+    expect(layout).toContain('/^\\/admin\\/departments\\/[^/]+\\/tasks$/');
     expect(attendance).toContain('departmentAttendanceInitialLoading');
     expect(attendance).toContain(
       'useRouteInitialLoading(departmentAttendanceInitialLoading)'
