@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import useAuthStore from '../../store/auth';
 
@@ -948,6 +948,158 @@ function NoticeBlock({ className = '' }) {
     <Block className={`!animate-[pulse_2s_linear_infinite] ${className}`} />
   );
 }
+function DepartmentContextSkeleton() {
+  return (
+    <div className="mb-6 flex flex-col items-start justify-between gap-4 rounded-3xl border border-indigo-500/20 bg-gradient-to-r from-slate-900 to-indigo-950 p-4 md:flex-row md:items-center">
+      {/* Department Context banner */}
+      {/* Department identity */}
+      <div className="h-12 flex items-center gap-3">
+        {/* Department Context icon */}
+        <Block className="h-10 w-10 shrink-0 rounded-2xl bg-indigo-500/20" />
+        <div>
+          {/* Context label and Admin Scope badge */}
+          <div className="flex items-center gap-2">
+            <Block className="h-4 w-36 rounded-md bg-indigo-500/20" />
+            <Block className="h-6 w-24 rounded-full bg-indigo-500/20" />
+          </div>
+          {/* Department name */}
+          <Block className="mt-2 h-6 w-28 rounded-md bg-indigo-500/20" />
+        </div>
+      </div>
+      {/* Attendance, Ratings, Tasks, and Change Department actions */}
+      <div className="flex w-full flex-wrap items-center gap-2 md:w-auto">
+        <Block className="h-9 w-28 rounded-xl bg-white/10" />
+        <Block className="h-9 w-24 rounded-xl bg-white/10" />
+        <Block className="h-9 w-20 rounded-xl bg-white/10" />
+        <Block className="h-9 w-44 rounded-xl bg-white/10" />
+      </div>
+    </div>
+  );
+}
+
+function DepartmentAttendanceSkeleton() {
+  return (
+    <div>
+      {/* Shared Department Context banner */}
+      <DepartmentContextSkeleton />
+      {/* Attendance page header */}
+      <div className="mb-7 flex items-center gap-4">
+        {/* Attendance header icon */}
+        <Block className="h-12 w-12 shrink-0 rounded-2xl" />
+        <div>
+          {/* Attendance eyebrow label */}
+          <Block className="h-4 w-36 rounded-md" />
+          {/* Attendance title */}
+          <Block className="mt-3 h-12 w-64 rounded-xl" />
+          {/* Attendance subtitle */}
+          <Block className="mt-3 h-5 w-[390px] max-w-[72vw] rounded-md" />
+        </div>
+      </div>
+      {/* View attendance controls card */}
+      <div className="mb-5 rounded-3xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900 md:p-6">
+        {/* View attendance for label */}
+        <Block className="mb-3 h-4 w-[150px] rounded-md" />
+        <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
+          {/* Team-member selector */}
+          <Block className="h-[51px] w-full rounded-2xl sm:max-w-sm" />
+          {/* View All button */}
+          <Block className="h-11 w-[104px] rounded-xl" />
+        </div>
+      </div>
+      {/* Attendance records table */}
+      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+        {/* Date, Status, and Remarks table header */}
+        <div className="grid h-14 grid-cols-3 items-center border-b border-slate-200 bg-slate-50 px-6 dark:border-slate-700 dark:bg-slate-950">
+          <Block className="h-5 w-16" />
+          <Block className="h-5 w-16" />
+          <Block className="mx-auto h-5 w-20" />
+        </div>
+        {/* Alternating attendance rows */}
+        {Array.from({ length: 5 }, (_, i) => (
+          <div
+            key={i}
+            className={`grid h-[74px] grid-cols-3 items-center border-b border-slate-100 px-6 last:border-0 dark:border-slate-700 ${i % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/50 dark:bg-slate-800/35'}`}
+          >
+            <Block className="h-5 w-28" />
+            <Block className="h-7 w-24 rounded-full" />
+            <Block className="mx-auto h-5 w-5" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DepartmentRatingsSkeleton() {
+  return (
+    <div>
+      {/* Shared Department Context banner */}
+      <DepartmentContextSkeleton />
+      {/* Ratings page header */}
+      <div className="mb-6 flex items-center gap-4">
+        {/* Ratings header icon */}
+        <Block className="h-12 w-12 shrink-0 rounded-2xl" />
+        <div>
+          {/* Performance eyebrow label */}
+          <Block className="h-4 w-40" />
+          {/* Ratings title */}
+          <Block className="mt-3 h-12 w-52" />
+          {/* Ratings subtitle */}
+          <Block className="mt-3 h-5 w-[410px] max-w-[72vw]" />
+        </div>
+      </div>
+      {/* View Ratings History card */}
+      <div className="mb-6 rounded-3xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900 md:h-[273px] md:p-7">
+        {/* History heading and average-rating summary */}
+        <div className="mb-6 flex justify-between gap-4 border-b border-slate-100 pb-4 dark:border-slate-800">
+          <div className="flex items-center gap-3">
+            {/* History icon */}
+            <Block className="h-10 w-10 shrink-0 rounded-xl" />
+            <div>
+              {/* View Ratings History title */}
+              <Block className="h-7 w-56" />
+              {/* History description */}
+              <Block className="mt-2 h-5 w-[460px] max-w-[60vw]" />
+            </div>
+          </div>
+          {/* Average rating summary */}
+          <Block className="h-[92px] w-[240px] rounded-2xl" />
+        </div>
+        {/* Department selector, team-member selector, and View All action */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_12rem] lg:items-end">
+          <div>
+            <Block className="mb-2 h-4 w-28" />
+            <Block className="h-[51px] w-full rounded-2xl" />
+          </div>
+          <div>
+            <Block className="mb-2 h-4 w-28" />
+            <Block className="h-[51px] w-full rounded-2xl" />
+          </div>
+          {/* View All button */}
+          <Block className="h-[42px] w-28 rounded-xl" />
+        </div>
+      </div>
+      {/* Rating-history result cards */}
+      <div className="space-y-3">
+        {Array.from({ length: 3 }, (_, i) => (
+          <div
+            key={i}
+            className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900"
+          >
+            {/* Score and submitted-date placeholders */}
+            <div className="mb-3 flex items-center justify-between gap-4">
+              <Block className="h-7 w-48" />
+              <Block className="h-7 w-28 rounded-full" />
+            </div>
+            {/* Rating remarks */}
+            <Block className="h-5 w-72 max-w-full" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ProjectDetailSkeleton() {
   return (
     <div>
@@ -1743,8 +1895,9 @@ export default function RouteRefreshSkeleton() {
   else if (kind === 'internops') body = <InternOpsSkeleton />;
   else if (kind === 'performance-intelligence')
     body = <PerformanceIntelligenceSkeleton />;
-  else if (kind === 'department-attendance') body = <Attendance department />;
-  else if (kind === 'department-ratings') body = <Ratings department />;
+  else if (kind === 'department-attendance')
+    body = <DepartmentAttendanceSkeleton />;
+  else if (kind === 'department-ratings') body = <DepartmentRatingsSkeleton />;
   else if (kind === 'department-tasks') body = <Tasks department />;
   else if (kind === 'project-detail') body = <ProjectDetailSkeleton />;
   else if (kind === 'department-projects')

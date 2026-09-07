@@ -1,4 +1,4 @@
-﻿import fs from 'node:fs';
+import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
@@ -457,6 +457,27 @@ describe('refresh loading and route preservation contract', () => {
     expect(skeleton).toContain('min-h-[260px]');
   });
 
+  it('coordinates exact department Attendance and Ratings loading without initial circles', () => {
+    const layout = read('src/layouts/DashboardLayout.jsx');
+    const attendance = read('src/pages/Attendance.jsx');
+    const ratings = read('src/pages/Ratings.jsx');
+    expect(layout).toContain('/^\\/admin\\/departments\\/[^/]+\\/attendance$/');
+    expect(layout).toContain('/^\\/admin\\/departments\\/[^/]+\\/ratings$/');
+    expect(attendance).toContain('departmentAttendanceInitialLoading');
+    expect(attendance).toContain(
+      'useRouteInitialLoading(departmentAttendanceInitialLoading)'
+    );
+    expect(ratings).toContain('departmentRatingsInitialLoading');
+    expect(ratings).toContain(
+      'useRouteInitialLoading(departmentRatingsInitialLoading)'
+    );
+    expect(skeleton).toContain('function DepartmentContextSkeleton()');
+    expect(skeleton).toContain('function DepartmentAttendanceSkeleton()');
+    expect(skeleton).toContain('function DepartmentRatingsSkeleton()');
+    expect(skeleton).toContain("kind === 'department-attendance'");
+    expect(skeleton).toContain("kind === 'department-ratings'");
+    expect(skeleton).toContain('dark:bg-slate-800/35');
+  });
   it('keeps the exact Project Detail skeleton until hierarchy and attendance data are ready', () => {
     const layout = read('src/layouts/DashboardLayout.jsx');
     const detail = read('src/pages/admin/ProjectDetailPage.jsx');
@@ -469,7 +490,7 @@ describe('refresh loading and route preservation contract', () => {
     expect(attendance).toContain(
       'useRouteInitialLoading(isProjectView && isLoading && !data)'
     );
-    expect(attendance).toContain('!isProjectView && !viewAll && isLoading');
+    expect(attendance).toContain('!departmentAttendanceInitialLoading && (');
     expect(skeleton).toContain('function ProjectDetailSkeleton()');
     expect(skeleton).toContain("kind === 'project-detail'");
     expect(skeleton).toContain('h-[40px] w-[190px] rounded-2xl');

@@ -237,6 +237,8 @@ const COORDINATED_LOADING_ROUTES = new Set([
 const COORDINATED_LOADING_ROUTE_PATTERNS = [
   /^\/departments\/[^/]+\/projects$/,
   /^\/departments\/[^/]+\/projects\/[^/]+$/,
+  /^\/admin\/departments\/[^/]+\/attendance$/,
+  /^\/admin\/departments\/[^/]+\/ratings$/,
 ];
 
 function canShowNavItem(item, role, flags, flagsLoaded) {

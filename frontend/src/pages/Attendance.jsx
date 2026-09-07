@@ -106,7 +106,7 @@ export default function Attendance({
   };
 
   // Managers use their first authorized department as the default scope.
-  const { data: departments = [] } = useQuery({
+  const { data: departments = [], isLoading: departmentsLoading } = useQuery({
     queryKey: ['departments'],
     queryFn: () => api.get('/departments').then((res) => res.data),
     enabled: hydrated && !!accessToken && isManager && !isProjectView,
@@ -115,6 +115,7 @@ export default function Attendance({
   // Managers can pick any team member; everyone can always see their own.
   const {
     data: team = [],
+    isLoading: teamIsLoading,
     isError: teamIsError,
     error: teamError,
     refetch: refetchTeam,
@@ -191,6 +192,14 @@ export default function Attendance({
   const total = data?.total ?? 0;
   const totalPages = Math.max(Math.ceil(total / limit), 1);
 
+  const departmentAttendanceInitialLoading =
+    !isProjectView &&
+    !!deptId &&
+    (departmentsLoading ||
+      teamIsLoading ||
+      !viewUserId ||
+      (isLoading && !data));
+  useRouteInitialLoading(departmentAttendanceInitialLoading);
   const effectiveTeam = isProjectView ? roster : team;
   useRouteInitialLoading(isProjectView && isLoading && !data);
 
@@ -420,11 +429,14 @@ export default function Attendance({
                 />
               </div>
             )}
-            {!isProjectView && !viewAll && isLoading && (
-              <div className="flex justify-center p-8 mb-5">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600" />
-              </div>
-            )}
+            {!isProjectView &&
+              !viewAll &&
+              isLoading &&
+              !departmentAttendanceInitialLoading && (
+                <div className="flex justify-center p-8 mb-5">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600" />
+                </div>
+              )}
 
             {!viewAll && isError && (
               <div className="mb-5">
@@ -643,11 +655,14 @@ export default function Attendance({
                 />
               </div>
             )}
-            {!isProjectView && !viewAll && isLoading && (
-              <div className="flex justify-center p-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600" />
-              </div>
-            )}
+            {!isProjectView &&
+              !viewAll &&
+              isLoading &&
+              !departmentAttendanceInitialLoading && (
+                <div className="flex justify-center p-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600" />
+                </div>
+              )}
 
             {!viewAll && isError && (
               <ApiErrorState
