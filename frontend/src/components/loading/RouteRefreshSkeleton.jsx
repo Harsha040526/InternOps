@@ -2217,6 +2217,50 @@ function BulkGenerateSkeleton() {
   );
 }
 
+function CanvaTemplatesSkeleton() {
+  return (
+    <>
+      <div className="mb-6 flex items-center gap-4">
+        <Block className="h-12 w-12 shrink-0 rounded-2xl" />
+        <Block className="h-10 w-[320px] max-w-[68vw] rounded-xl" />
+      </div>
+      <div className="mx-auto mt-[28px] max-w-7xl space-y-5">
+        <Card className="p-5 sm:px-6 sm:py-[20px]">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-center gap-4">
+              <Block className="h-12 w-12 shrink-0 rounded-xl" />
+              <div className="min-w-0">
+                <Block className="h-7 w-40 rounded-lg" />
+                <Block className="mt-2 h-5 w-[390px] max-w-[62vw] rounded-md" />
+              </div>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Block className="h-7 w-[130px] rounded-full" />
+              <Block className="h-[42px] w-[190px] rounded-lg" />
+            </div>
+          </div>
+        </Card>
+        <Card className="p-5 sm:p-6">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <Block className="h-7 w-44 rounded-lg" />
+              <Block className="mt-2 h-5 w-[270px] max-w-[68vw] rounded-md" />
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
+              <Block className="h-[42px] w-[235px] rounded-lg" />
+              <Block className="h-[42px] w-[175px] rounded-lg" />
+            </div>
+          </div>
+          <div className="flex min-h-[232px] flex-col items-center justify-center pb-6 pt-10 text-center">
+            <Block className="h-12 w-12 rounded-2xl" />
+            <Block className="mt-5 h-5 w-[360px] max-w-[80%] rounded-md" />
+          </div>
+        </Card>
+      </div>
+    </>
+  );
+}
+
 export function routeKind(path) {
   if (/^\/(?:admin\/)?tasks\/[^/]+$/.test(path)) return 'task-detail';
   if (/^\/departments\/[^/]+\/projects\/[^/]+$/.test(path))
@@ -2290,6 +2334,7 @@ export default function RouteRefreshSkeleton() {
   else if (kind === 'audit') body = <AuditLogSkeleton />;
   else if (kind === 'assistant') body = <AssistantSkeleton />;
   else if (kind === 'certificates') body = <CertificatesSkeleton />;
+  else if (kind === 'canva-templates') body = <CanvaTemplatesSkeleton />;
   else body = <Generic />;
   return (
     <section
@@ -2299,9 +2344,11 @@ export default function RouteRefreshSkeleton() {
       data-testid={`refresh-skeleton-${kind}`}
     >
       {body}
-      <p className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
-        {slow ? 'This is taking longer than usual...' : 'Loading page...'}
-      </p>
+      {kind !== 'canva-templates' && (
+        <p className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
+          {slow ? 'This is taking longer than usual...' : 'Loading page...'}
+        </p>
+      )}
     </section>
   );
 }

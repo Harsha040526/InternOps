@@ -208,6 +208,38 @@ describe('refresh loading and route preservation contract', () => {
     expect(bulkGenerate).toContain('dark:bg-slate-800');
   });
 
+  it('coordinates Templates and Canva loading and matches its compact empty workspace', () => {
+    const layout = read('src/layouts/DashboardLayout.jsx');
+    const canvaTemplates = read('src/pages/admin/CanvaTemplates.jsx');
+    expect(skeleton).toContain('function CanvaTemplatesSkeleton()');
+    expect(skeleton).toContain("kind === 'canva-templates'");
+    expect(skeleton).toContain('<CanvaTemplatesSkeleton />');
+    expect(skeleton).toContain('mx-auto mt-[28px] max-w-7xl space-y-5');
+    expect(skeleton).toContain('h-10 w-[320px] max-w-[68vw]');
+    expect(skeleton).toContain('sm:px-6 sm:py-[20px]');
+    expect(skeleton).toContain('h-7 w-40 rounded-lg');
+    expect(skeleton).toContain('w-[390px] max-w-[62vw]');
+    expect(skeleton).toContain('pb-6 pt-10 text-center');
+    expect(skeleton).toContain('w-[360px] max-w-[80%]');
+    expect(skeleton).toContain("kind !== 'canva-templates'");
+    expect(skeleton).toContain('h-7 w-[130px] rounded-full');
+    expect(skeleton).toContain('h-[42px] w-[190px]');
+    expect(skeleton).toContain('h-[42px] w-[235px]');
+    expect(skeleton).toContain('min-h-[232px] flex-col items-center');
+    expect(layout).toContain("'/canva-templates'");
+    expect(canvaTemplates).toContain(
+      'useRouteInitialLoading(canvaTemplatesInitialLoading)'
+    );
+    expect(canvaTemplates).toContain('statusLoading && !canvaStatusResp');
+    expect(canvaTemplates).toContain('templatesLoading && !templatesResp');
+    expect(canvaTemplates).not.toContain(
+      'min-h-screen bg-gray-50 dark:bg-gray-900 p-6'
+    );
+    expect(canvaTemplates).not.toContain('statusLoading ?');
+    expect(skeleton).toContain('min-h-[232px]');
+    expect(canvaTemplates).toContain('flex flex-col gap-3 sm:flex-row');
+  });
+
   it('covers nested department and role-specific refresh structures', () => {
     expect(skeleton).toContain("'project-detail'");
     expect(skeleton).toContain("'department-projects'");

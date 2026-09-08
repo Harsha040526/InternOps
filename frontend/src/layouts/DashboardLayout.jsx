@@ -228,6 +228,7 @@ const COORDINATED_LOADING_ROUTES = new Set([
   '/quick-generate',
   '/certificates',
   '/bulk-generate',
+  '/canva-templates',
   '/tasks',
   '/notifications',
   '/sessions',
