@@ -1821,6 +1821,72 @@ function InternOpsSkeleton() {
     </>
   );
 }
+function AuditLogSkeleton() {
+  // Mirrors the loaded Audit Log table column proportions.
+  const columns = '17fr 23fr 20fr 16fr 24fr';
+
+  // Placeholder widths follow the Time, Actor, Action, Resource, and Details columns.
+  const cellWidths = [
+    'w-[82%]', // Time placeholder width
+    'w-[88%]', // Actor placeholder width
+    'w-[132px]', // Action badge placeholder width
+    'w-[72%]', // Resource placeholder width
+    'w-[86%]', // Details placeholder width
+  ];
+
+  return (
+    <div className="pt-0">
+      {/* Audit Log page header. */}
+      <div className="mb-[37px] flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-4">
+          <Block className="h-12 w-12 shrink-0 rounded-2xl" />
+          <div>
+            <Block className="mb-3 h-4 w-32 rounded-md" />
+
+            <Block className="my-2 h-10 w-[178px] rounded-lg" />
+
+            <Block className="mt-3 h-5 w-[320px] max-w-[70vw] rounded-lg" />
+          </div>
+        </div>
+      </div>
+
+      {/* Audit Log table shell and column header. */}
+      <div className="-mt-1 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_14px_35px_rgba(15,23,42,0.06)] dark:border-indigo-400/20 dark:bg-slate-900 dark:shadow-[0_16px_40px_rgba(2,6,23,0.24)]">
+        <div
+          className="grid h-12 items-center gap-4 border-b border-slate-200 bg-slate-50 px-4 dark:border-indigo-400/15 dark:bg-slate-950/70"
+          style={{ gridTemplateColumns: columns }}
+        >
+          {['w-12', 'w-14', 'w-16', 'w-20', 'w-16'].map((width) => (
+            <Block key={width} className={`h-4 rounded-md ${width}`} />
+          ))}
+        </div>
+
+        {/* Alternating placeholders mirror the loaded Audit Log rows. */}
+        {Array.from({ length: 10 }, (_, row) => (
+          <div
+            key={row}
+            className={`grid h-[56px] items-center gap-4 border-b border-slate-100 px-4 last:border-b-0 dark:border-slate-700 ${
+              row % 2 === 0
+                ? 'bg-white dark:bg-slate-900'
+                : 'bg-slate-50/50 dark:bg-slate-800/25'
+            }`}
+            style={{ gridTemplateColumns: columns }}
+          >
+            {cellWidths.map((width, column) => (
+              <Block
+                key={column}
+                className={`h-4 max-w-full ${width} ${
+                  column === 2 ? 'h-7 rounded-full' : 'rounded-md'
+                }`}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function routeKind(path) {
   if (/^\/(?:admin\/)?tasks\/[^/]+$/.test(path)) return 'task-detail';
   if (/^\/departments\/[^/]+\/projects\/[^/]+$/.test(path))
@@ -1891,13 +1957,7 @@ export default function RouteRefreshSkeleton() {
   else if (kind === 'ai-certificates') body = <FormPage tabs />;
   else if (['quick-generate', 'bulk-generate'].includes(kind))
     body = <FormPage />;
-  else if (kind === 'audit')
-    body = (
-      <>
-        <Header actions={0} />
-        <TableShape cols={5} rows={7} />
-      </>
-    );
+  else if (kind === 'audit') body = <AuditLogSkeleton />;
   else if (kind === 'certificates') body = <Generic cols={6} />;
   else body = <Generic />;
   return (

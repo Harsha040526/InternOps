@@ -37,6 +37,7 @@ describe('refresh loading and route preservation contract', () => {
     const coordinator = read('src/components/loading/RouteInitialLoading.jsx');
     const pages = [
       read('src/pages/admin/AdminDashboard.jsx'),
+      read('src/pages/admin/AuditLog.jsx'),
       read('src/pages/admin/Departments.jsx'),
       read('src/pages/admin/ProjectsPage.jsx'),
       read('src/pages/admin/ProjectDetailPage.jsx'),
@@ -68,6 +69,21 @@ describe('refresh loading and route preservation contract', () => {
       expect(page).toContain('useRouteInitialLoading');
       expect(page).not.toContain('return <RouteRefreshSkeleton />');
     }
+  });
+  it('keeps Audit Log behind the centralized skeleton until initial records resolve', () => {
+    const layout = read('src/layouts/DashboardLayout.jsx');
+    const audit = read('src/pages/admin/AuditLog.jsx');
+    expect(layout).toContain("'/audit'");
+    expect(audit).toContain('useRouteInitialLoading(auditInitialLoading)');
+    expect(audit).toContain('isLoading && !data');
+    expect(audit).not.toContain('<Spinner />');
+    expect(audit).toContain('!auditInitialLoading && !isError && (');
+    expect(skeleton).toContain("kind === 'audit'");
+    expect(skeleton).toContain('function AuditLogSkeleton()');
+
+    expect(skeleton).toContain('<AuditLogSkeleton />');
+
+    expect(skeleton).toContain("const columns = '17fr 23fr 20fr 16fr 24fr'");
   });
   it('covers nested department and role-specific refresh structures', () => {
     expect(skeleton).toContain("'project-detail'");
