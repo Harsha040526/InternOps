@@ -1,47 +1,58 @@
 const pool = require('../config/db');
-const { getRedisClient } = require('../config/redis');
+const { runRedisOperation } = require('../config/redis');
+const logger = require('../logger');
+
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_MINUTES = 15;
 const repo = require('../modules/auth/repository');
 const emailService = require('../services/email');
 
 async function incrementAttempt(email, ip) {
-  const redis = await getRedisClient();
-  if (!redis) return 0;
-
-  const key = `brute:${email}:${ip}`;
-  const count = await redis.incr(key);
-  await redis.expire(key, LOCKOUT_MINUTES * 60);
-  return count;
+  return runRedisOperation(
+    'login rate limiting',
+    'using the PostgreSQL login-attempt history',
+    async (redis) => {
+      const key = `brute:${email}:${ip}`;
+      const count = await redis.incr(key);
+      await redis.expire(key, LOCKOUT_MINUTES * 60);
+      return count;
+    },
+    0
+  );
 }
 
 async function isAccountLocked(email, ip) {
   const windowStart = new Date(Date.now() - LOCKOUT_MINUTES * 60 * 1000);
+
   const emailRes = await pool.query(
     `SELECT COUNT(*) AS failed FROM login_attempts
      WHERE email = $1 AND ip_address = $2 AND success = false AND attempted_at > $3`,
     [email, ip, windowStart]
   );
+
   const ipRes = await pool.query(
     `SELECT COUNT(*) AS failed FROM login_attempts
      WHERE ip_address = $1 AND success = false AND attempted_at > $2`,
     [ip, windowStart]
   );
+
   const emailLocked = parseInt(emailRes.rows[0].failed, 10) >= MAX_ATTEMPTS;
   const ipLocked = parseInt(ipRes.rows[0].failed, 10) >= MAX_ATTEMPTS * 3;
 
   if (emailLocked || ipLocked) return true;
 
-  try {
-    const redis = await getRedisClient();
-    if (redis) {
+  const redisLocked = await runRedisOperation(
+    'login rate limiting',
+    'using the PostgreSQL login-attempt history',
+    async (redis) => {
       const redisFailed = await redis.get(`brute:${email}:${ip}`);
-      if (redisFailed && parseInt(redisFailed, 10) >= MAX_ATTEMPTS) {
-        return true;
-      }
-    }
-  } catch (err) {
-    console.error('Redis brute force check error:', err);
+      return Boolean(redisFailed && parseInt(redisFailed, 10) >= MAX_ATTEMPTS);
+    },
+    false
+  );
+
+  if (redisLocked) {
+    return true;
   }
 
   return false;
@@ -52,6 +63,22 @@ async function recordLoginAttempt(email, ip, success) {
     'INSERT INTO login_attempts (email, ip_address, success) VALUES ($1,$2,$3)',
     [email, ip, success]
   );
+  if (!success) {
+    await runRedisOperation(
+      'login rate limiting',
+      'keeping the PostgreSQL login-attempt record only',
+      async (redis) => {
+        const key = `brute:${email}:${ip}`;
+        const count = await redis.incr(key);
+
+        if (count === 1) {
+          await redis.expire(key, 24 * 60 * 60);
+        }
+        return true;
+      },
+      false
+    );
+  }
 }
 
 /**
@@ -65,49 +92,48 @@ async function clearFailedAttempts(email, ip) {
     [email, ip]
   );
 
-  try {
-    const redis = await getRedisClient();
-    if (redis) {
-      await redis.del(`brute:${email}:${ip}`);
-    }
-  } catch (err) {
-    console.error('Redis clear failed attempts error:', err);
-  }
+  await runRedisOperation(
+    'login rate limiting',
+    'clearing the PostgreSQL login-attempt history only',
+    (redis) => redis.del(`brute:${email}:${ip}`),
+    false
+  );
 }
 
 async function bruteForceCheck(request, reply) {
   const { email } = request.body;
+
   if (!email) return;
 
   const ip = request.ip;
   const locked = await isAccountLocked(email, ip);
+
   if (locked) {
     const user = await repo.findByEmail(email);
     if (user) {
       try {
-        const redis = await getRedisClient();
-        if (redis) {
-          const notifyKey = `lockout-email:${email}`;
-          const alreadySent = await redis.get(notifyKey);
-          if (!alreadySent) {
-            await emailService.sendAccountLockoutNotification(email, {
-              ipAddress: ip,
-              timestamp: new Date().toISOString(),
-              failedAttempts: MAX_ATTEMPTS,
-            });
-            // Set key with expiry equal to lockout duration (15 minutes)
-            await redis.set(notifyKey, '1', { EX: LOCKOUT_MINUTES * 60 });
-          }
-        } else {
-          // Fallback if Redis is down – send once but without deduplication
+        const notifyKey = `lockout-email:${email}`;
+        const alreadySent = await runRedisOperation(
+          'account-lockout notification deduplication',
+          'sending without cross-process deduplication',
+          (redis) => redis.get(notifyKey)
+        );
+
+        if (!alreadySent) {
           await emailService.sendAccountLockoutNotification(email, {
             ipAddress: ip,
             timestamp: new Date().toISOString(),
             failedAttempts: MAX_ATTEMPTS,
           });
+
+          await runRedisOperation(
+            'account-lockout notification deduplication',
+            'continuing without a Redis deduplication marker',
+            (redis) => redis.set(notifyKey, '1', { EX: LOCKOUT_MINUTES * 60 })
+          );
         }
       } catch (err) {
-        console.error('Failed to send lockout email:', err);
+        logger.error({ err }, 'Failed to send lockout email');
       }
     }
 

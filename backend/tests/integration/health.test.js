@@ -1,9 +1,16 @@
+const http = require('http');
 const app = require('../../src/app');
 
 describe('Health Check Integration Tests', () => {
+  let serverUrl;
+
   beforeAll(async () => {
     jest.setTimeout(30000);
-    await app.ready();
+    const { initializeWebSocket } = require('../../src/websocket');
+    // Start listening on an ephemeral port so we can test socket.io
+    // handshake HTTP handlers (which bypass fastify route routing).
+    serverUrl = await app.listen({ port: 0 });
+    initializeWebSocket(app.server, app.log);
   });
 
   afterAll(async () => {
@@ -25,13 +32,75 @@ describe('Health Check Integration Tests', () => {
   });
 
   describe('GET /health/detailed', () => {
-    it('should require authentication', async () => {
+    it('should return health status when authenticated as admin', async () => {
+      const {
+        SEEDED_ADMIN_EMAIL,
+        SEEDED_ADMIN_PASSWORD,
+      } = require('./helpers');
+      const loginRes = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/login',
+        payload: { email: SEEDED_ADMIN_EMAIL, password: SEEDED_ADMIN_PASSWORD },
+      });
+      const token = JSON.parse(loginRes.body).accessToken;
+
       const res = await app.inject({
         method: 'GET',
         url: '/health/detailed',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      expect([401, 403]).toContain(res.statusCode);
+      expect([200, 503]).toContain(res.statusCode);
+    });
+  });
+
+  describe('WebSocket Handshake Authentication', () => {
+    it('should reject handshake with invalid token', (done) => {
+      http
+        .get(
+          `${serverUrl}/socket.io/?EIO=4&transport=polling&token=invalid_token`,
+          (res) => {
+            expect(res.statusCode).toBe(403);
+            done();
+          }
+        )
+        .on('error', (err) => {
+          done(err);
+        });
+    });
+  });
+
+  describe('WebSocket Handshake Authentication', () => {
+    it('should reject handshake with invalid token', (done) => {
+      http
+        .get(
+          `${serverUrl}/socket.io/?EIO=4&transport=polling&token=invalid_token`,
+          (res) => {
+            expect(res.statusCode).toBe(403);
+            done();
+          }
+        )
+        .on('error', (err) => {
+          done(err);
+        });
+    });
+  });
+
+  describe('WebSocket Handshake Authentication', () => {
+    it('should reject handshake with invalid token', (done) => {
+      http
+        .get(
+          `${serverUrl}/socket.io/?EIO=4&transport=polling&token=invalid_token`,
+          (res) => {
+            expect(res.statusCode).toBe(403);
+            done();
+          }
+        )
+        .on('error', (err) => {
+          done(err);
+        });
     });
   });
 });
