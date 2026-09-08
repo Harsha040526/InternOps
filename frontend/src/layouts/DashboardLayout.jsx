@@ -366,6 +366,7 @@ export default function DashboardLayout() {
   const flagsLoaded = useFeatureFlagsStore((s) => s.loaded);
   const SIDEBAR_KEY = 'sidebar_scroll';
   const sidebarNavRef = useRef(null);
+  const mainContentRef = useRef(null);
 
   const [collapsed, setCollapsed] = useState(
     () => localStorage.getItem('sidebar') === 'collapsed'
@@ -553,6 +554,11 @@ export default function DashboardLayout() {
     logout();
     navigate('/login');
   };
+  useLayoutEffect(() => {
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    }
+  }, [loc.pathname]);
   useLayoutEffect(() => {
     if (previousPathRef.current !== loc.pathname) {
       setAnimatedRoutePath(loc.pathname);
@@ -859,7 +865,7 @@ export default function DashboardLayout() {
             </button>
           </div>
         )}
-        <main className="flex-1 overflow-auto p-5 sm:p-6">
+        <main ref={mainContentRef} className="flex-1 overflow-auto p-5 sm:p-6">
           <div key={loc.pathname} className="min-h-[calc(100vh-7rem)]">
             {COORDINATED_LOADING_ROUTES.has(loc.pathname) ||
             COORDINATED_LOADING_ROUTE_PATTERNS.some((pattern) =>

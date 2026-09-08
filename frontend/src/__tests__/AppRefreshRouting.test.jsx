@@ -95,6 +95,20 @@ describe('refresh loading and route preservation contract', () => {
     expect(skeleton).toContain('hidden w-[330px]');
   });
 
+  it('uses the dedicated Quick Generate skeleton and resets main scroll on navigation', () => {
+    const layout = read('src/layouts/DashboardLayout.jsx');
+    expect(skeleton).toContain('function QuickGenerateSkeleton()');
+    expect(skeleton).toContain("kind === 'quick-generate'");
+    expect(skeleton).toContain('<QuickGenerateSkeleton />');
+    expect(skeleton).toContain('lg:grid-cols-5');
+    expect(skeleton).toContain('lg:col-span-3');
+    expect(skeleton).toContain('lg:col-span-2');
+    expect(layout).toContain('const mainContentRef = useRef(null);');
+    expect(layout).toContain('mainContentRef.current.scrollTo({');
+    expect(layout).toContain('top: 0');
+    expect(layout).toContain('<main ref={mainContentRef}');
+  });
+
   it('covers nested department and role-specific refresh structures', () => {
     expect(skeleton).toContain("'project-detail'");
     expect(skeleton).toContain("'department-projects'");

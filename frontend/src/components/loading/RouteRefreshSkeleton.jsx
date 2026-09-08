@@ -2041,6 +2041,68 @@ function AssistantSkeleton() {
   );
 }
 
+function QuickGenerateSkeleton() {
+  const fieldWidths = ['w-40', 'w-52', 'w-28', 'w-36'];
+
+  return (
+    <>
+      {/* Quick Generate page header. */}
+      <div className="mb-8 flex items-center gap-4">
+        <Block className="h-12 w-12 shrink-0 rounded-2xl" />
+        <div>
+          <Block className="h-12 w-[460px] max-w-[68vw] rounded-xl" />
+          <Block className="mt-3 h-5 w-[490px] max-w-[72vw] rounded-md" />
+        </div>
+      </div>
+
+      {/* The loaded workspace uses a centered three-column form and two-column preview. */}
+      <div className="mx-auto max-w-5xl px-4 py-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
+          <div className="lg:col-span-3">
+            <Card className="min-h-[760px] p-6">
+              <Block className="mb-5 h-7 w-48 rounded-lg" />
+              <div className="space-y-4">
+                {fieldWidths.map((width, index) => (
+                  <div key={`${width}-${index}`}>
+                    <Block className={`mb-1.5 h-5 ${width} rounded-md`} />
+                    <Block className="h-[51px] w-full rounded-xl" />
+                  </div>
+                ))}
+
+                <div className="grid grid-cols-2 gap-4">
+                  {['w-24', 'w-20'].map((width) => (
+                    <div key={width}>
+                      <Block className={`mb-1.5 h-5 ${width} rounded-md`} />
+                      <Block className="h-[51px] w-full rounded-xl" />
+                    </div>
+                  ))}
+                </div>
+
+                <div>
+                  <Block className="mb-1.5 h-5 w-24 rounded-md" />
+                  <Block className="h-[51px] w-full rounded-xl" />
+                </div>
+                <Block className="h-12 w-full rounded-xl" />
+              </div>
+            </Card>
+          </div>
+
+          <div className="lg:col-span-2">
+            <Card className="min-h-[414px] p-6">
+              <Block className="mb-5 h-7 w-56 rounded-lg" />
+              <div className="flex min-h-[300px] flex-col items-center justify-center">
+                <Block className="h-12 w-12 rounded-xl" />
+                <Block className="mt-5 h-5 w-48 rounded-md" />
+                <Block className="mt-3 h-4 w-52 rounded-md" />
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 export function routeKind(path) {
   if (/^\/(?:admin\/)?tasks\/[^/]+$/.test(path)) return 'task-detail';
   if (/^\/departments\/[^/]+\/projects\/[^/]+$/.test(path))
@@ -2109,8 +2171,8 @@ export default function RouteRefreshSkeleton() {
     body = <DepartmentProjectsSkeleton />;
   else if (kind === 'task-detail') body = <TaskDetails />;
   else if (kind === 'ai-certificates') body = <FormPage tabs />;
-  else if (['quick-generate', 'bulk-generate'].includes(kind))
-    body = <FormPage />;
+  else if (kind === 'quick-generate') body = <QuickGenerateSkeleton />;
+  else if (kind === 'bulk-generate') body = <FormPage />;
   else if (kind === 'audit') body = <AuditLogSkeleton />;
   else if (kind === 'assistant') body = <AssistantSkeleton />;
   else if (kind === 'certificates') body = <Generic cols={6} />;
