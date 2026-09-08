@@ -103,10 +103,49 @@ describe('refresh loading and route preservation contract', () => {
     expect(skeleton).toContain('lg:grid-cols-5');
     expect(skeleton).toContain('lg:col-span-3');
     expect(skeleton).toContain('lg:col-span-2');
+    expect(skeleton).toContain('mb-6 flex items-center gap-4');
+    expect(skeleton).toContain('h-10 w-[460px]');
+    expect(skeleton).toContain('pt-[37px] pb-8');
+    expect(skeleton).toContain('h-[294px] p-6');
+    expect(skeleton).toContain('h-[180px] flex-col');
     expect(layout).toContain('const mainContentRef = useRef(null);');
     expect(layout).toContain('mainContentRef.current.scrollTo({');
     expect(layout).toContain('top: 0');
     expect(layout).toContain('<main ref={mainContentRef}');
+  });
+
+  it('avoids duplicate page motion and keeps Assistant chat scrolling internal', () => {
+    const assistant = read('src/components/InternOpsAssistant.jsx');
+    const quickGenerate = read('src/pages/admin/QuickGenerate.jsx');
+    expect(quickGenerate).not.toContain('<div className="animate-fade-in-up">');
+    expect(assistant).not.toContain(
+      '<div className="animate-fade-in-up h-[calc(100vh-6.5rem)]'
+    );
+    expect(assistant).toContain('const chatScrollRef = useRef(null);');
+    expect(assistant).toContain(
+      'if (messages.length <= 1 && !isTyping) return;'
+    );
+    expect(assistant).toContain('chatScrollRef.current.scrollTo({');
+    expect(assistant).toContain('top: chatScrollRef.current.scrollHeight');
+    expect(assistant).toContain('ref={chatScrollRef}');
+    expect(assistant).toContain(
+      'className="min-h-0 flex-1 overflow-y-auto px-4 md:px-6 py-5"'
+    );
+    expect(assistant).not.toContain('messagesEndRef');
+    expect(assistant).not.toContain('.scrollIntoView(');
+  });
+
+  it('keeps Quick Generate behind the route skeleton until templates resolve', () => {
+    const layout = read('src/layouts/DashboardLayout.jsx');
+    const quickGenerate = read('src/pages/admin/QuickGenerate.jsx');
+    expect(layout).toContain("'/quick-generate'");
+    expect(quickGenerate).toContain(
+      'useRouteInitialLoading(quickGenerateInitialLoading)'
+    );
+    expect(quickGenerate).toContain('templatesLoading && !templatesData');
+    expect(quickGenerate).not.toContain('<Spinner /> Loading templates...');
+    expect(quickGenerate).not.toContain('Badge, Spinner');
+    expect(quickGenerate).toContain('<CustomSelect');
   });
 
   it('covers nested department and role-specific refresh structures', () => {

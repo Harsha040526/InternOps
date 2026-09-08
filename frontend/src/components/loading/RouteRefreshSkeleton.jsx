@@ -2047,16 +2047,16 @@ function QuickGenerateSkeleton() {
   return (
     <>
       {/* Quick Generate page header. */}
-      <div className="mb-8 flex items-center gap-4">
+      <div className="mb-6 flex items-center gap-4">
         <Block className="h-12 w-12 shrink-0 rounded-2xl" />
         <div>
-          <Block className="h-12 w-[460px] max-w-[68vw] rounded-xl" />
+          <Block className="h-10 w-[460px] max-w-[68vw] rounded-xl" />
           <Block className="mt-3 h-5 w-[490px] max-w-[72vw] rounded-md" />
         </div>
       </div>
 
       {/* The loaded workspace uses a centered three-column form and two-column preview. */}
-      <div className="mx-auto max-w-5xl px-4 py-8">
+      <div className="mx-auto max-w-5xl px-4 pt-[37px] pb-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
           <div className="lg:col-span-3">
             <Card className="min-h-[760px] p-6">
@@ -2088,9 +2088,9 @@ function QuickGenerateSkeleton() {
           </div>
 
           <div className="lg:col-span-2">
-            <Card className="min-h-[414px] p-6">
+            <Card className="h-[294px] p-6">
               <Block className="mb-5 h-7 w-56 rounded-lg" />
-              <div className="flex min-h-[300px] flex-col items-center justify-center">
+              <div className="flex h-[180px] flex-col items-center justify-center">
                 <Block className="h-12 w-12 rounded-xl" />
                 <Block className="mt-5 h-5 w-48 rounded-md" />
                 <Block className="mt-3 h-4 w-52 rounded-md" />
