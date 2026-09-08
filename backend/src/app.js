@@ -287,6 +287,9 @@ if (process.env.NODE_ENV !== 'test') {
 
 app.register(require('./routes'), { prefix: '/api/v1' });
 app.register(require('./routes.v2'), { prefix: '/api/v2' });
+app.register(require('./modules/proof-submissions/routes'), {
+  prefix: '/api/proofs',
+});
 app.register(require('./modules/github-sync/routes'), {
   prefix: '/api/v1/github',
 });
@@ -434,6 +437,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 const bulkJobQueue = require('./services/bulkJobQueue');
+const verificationService = require('./modules/proof-submissions/verification.service');
 const {
   checkDatabase,
   integrationStatus,
@@ -449,6 +453,7 @@ const start = async () => {
     });
     initializeWebSocket(app.server, app.log);
     await bulkJobQueue.init();
+    await verificationService.initQueue();
     await getRedisClient();
     writeStartupSummary({
       logger: app.log,
@@ -495,6 +500,12 @@ const gracefulShutdown = async (signal) => {
       githubSyncOrchestrator.shutdown();
     } catch (syncErr) {
       app.log.warn({ err: syncErr }, 'Error shutting down GitHub sync');
+    }
+
+    try {
+      await verificationService.closeQueue();
+    } catch (qErr) {
+      app.log.warn({ err: qErr }, 'Error closing verification queue');
     }
 
     clearTimeout(forceShutdown);
