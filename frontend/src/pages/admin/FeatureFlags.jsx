@@ -19,6 +19,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import useAuthStore from '../../store/auth';
 import api from '../../lib/axios';
 import useFeatureFlagsStore from '../../store/featureFlags';
+import { useRouteInitialLoading } from '../../components/loading/RouteInitialLoading';
 
 // ─── Role badge colours ───────────────────────────────────────────────────────
 const ROLE_COLORS = {
@@ -392,6 +393,8 @@ export default function FeatureFlags() {
     enabled: hydrated && !!accessToken,
   });
 
+  const featureFlagsInitialLoading = isLoading && !data;
+  useRouteInitialLoading(featureFlagsInitialLoading);
   const flags = data ?? [];
   const enabledCount = flags.filter((f) => f.enabled).length;
 
@@ -543,14 +546,7 @@ export default function FeatureFlags() {
       </div>
 
       {/* ── Flags grid ── */}
-      {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-4">
-          <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Loading feature flags…
-          </p>
-        </div>
-      ) : isError ? (
+      {isError ? (
         <div className="flex flex-col items-center justify-center py-20 gap-3">
           <AlertTriangle className="w-8 h-8 text-rose-400" />
           <p className="text-sm text-slate-500 dark:text-slate-400">

@@ -240,6 +240,50 @@ describe('refresh loading and route preservation contract', () => {
     expect(canvaTemplates).toContain('flex flex-col gap-3 sm:flex-row');
   });
 
+  it('coordinates Feature Flags loading and matches its deployment-control workspace', () => {
+    const layout = read('src/layouts/DashboardLayout.jsx');
+    const featureFlags = read('src/pages/admin/FeatureFlags.jsx');
+    expect(skeleton).toContain('function FeatureFlagsSkeleton()');
+    expect(skeleton).toContain("kind === 'feature-flags'");
+    expect(skeleton).toContain('<FeatureFlagsSkeleton />');
+    expect(skeleton).toContain("['blue', 'green', 'rose'].map");
+    expect(skeleton).toContain('h-[155px] rounded-3xl');
+    expect(skeleton).toContain('mb-9 flex flex-col justify-between gap-4');
+    expect(skeleton).toContain('h-11 w-[230px] max-w-[60vw]');
+    expect(skeleton).toContain('mt-1 h-[42px] w-[110px]');
+    expect(skeleton).toContain('mt-1 h-4 w-16 rounded-md');
+    expect(skeleton).toContain('w-[410px] max-w-[72vw]');
+    expect(skeleton).toContain(
+      'mb-[34px] grid grid-cols-1 gap-4 sm:grid-cols-3'
+    );
+    expect(skeleton).toContain('h-8 w-8 rounded-lg');
+    expect(skeleton).toContain('mt-3 flex items-center gap-4');
+    expect(skeleton).toContain(
+      'grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3'
+    );
+    expect(skeleton).toContain(
+      'const cards = [true, true, false, true, true, false, false]'
+    );
+    expect(skeleton).toContain('h-[138px] overflow-hidden p-5');
+    expect(skeleton).toContain("enabled ? 'bg-emerald-400' : 'bg-slate-500'");
+    expect(skeleton).toContain('h-[38px] w-[86px]');
+    expect(skeleton).toContain('h-5 w-24 rounded-md');
+    expect(skeleton).toContain('h-6 w-12 shrink-0 rounded-full');
+    expect(skeleton).toContain('mt-3 h-4 w-full max-w-[145px] rounded-md');
+    expect(layout).toContain("'/feature-flags'");
+    expect(featureFlags).toContain(
+      'useRouteInitialLoading(featureFlagsInitialLoading)'
+    );
+    expect(featureFlags).toContain(
+      'const featureFlagsInitialLoading = isLoading && !data;'
+    );
+    expect(featureFlags).not.toContain('Loading feature flags');
+    expect(featureFlags).not.toContain('isLoading ? (');
+    expect(featureFlags).toContain('isError ? (');
+    expect(featureFlags).toContain('Failed to load flags.');
+    expect(featureFlags).toContain('Retry');
+    expect(skeleton).toContain('else body = <Generic />;');
+  });
   it('matches the AI Certificates toolbar, form, and independent Results workspace', () => {
     const aiCertificates = read('src/pages/admin/AICertificates.jsx');
     expect(skeleton).toContain('function AICertificatesSkeleton()');

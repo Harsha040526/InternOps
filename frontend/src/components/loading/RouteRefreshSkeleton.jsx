@@ -2355,6 +2355,83 @@ function AICertificatesSkeleton() {
   );
 }
 
+function FeatureFlagsSkeleton() {
+  const cards = [true, true, false, true, true, false, false];
+
+  return (
+    <>
+      <div className="mb-9 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <div className="flex items-center gap-4">
+          <Block className="h-12 w-12 shrink-0 rounded-2xl" />
+          <div>
+            <Block className="mb-2 h-4 w-44 rounded-md" />
+            <Block className="h-11 w-[230px] max-w-[60vw] rounded-xl" />
+            <Block className="mt-3 h-5 w-[410px] max-w-[72vw] rounded-md" />
+          </div>
+        </div>
+        <Block className="mt-1 h-[42px] w-[110px] rounded-xl" />
+      </div>
+
+      <div className="mb-[34px] grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {['blue', 'green', 'rose'].map((tone) => (
+          <div
+            key={tone}
+            className={`h-[155px] rounded-3xl border p-5 ${
+              tone === 'blue'
+                ? 'border-blue-200 bg-blue-100/60 dark:border-blue-900/40 dark:bg-blue-900/40'
+                : tone === 'green'
+                  ? 'border-green-200 bg-green-100/60 dark:border-green-900/40 dark:bg-green-900/40'
+                  : 'border-rose-200 bg-rose-100/60 dark:border-rose-900/40 dark:bg-rose-900/40'
+            }`}
+          >
+            <Block className="mb-4 h-10 w-10 rounded-2xl" />
+            <Block className="h-8 w-8 rounded-lg" />
+            <Block className="mt-3 h-4 w-28 rounded-md" />
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {cards.map((enabled, index) => (
+          <Card
+            key={index}
+            className={`relative h-[138px] overflow-hidden p-5 ${
+              enabled ? 'dark:bg-slate-900' : 'dark:bg-slate-800/60'
+            }`}
+          >
+            <div
+              className={`absolute inset-y-0 left-0 w-1 ${
+                enabled ? 'bg-emerald-400' : 'bg-slate-500'
+              }`}
+            />
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <Block className="h-5 w-24 rounded-md" />
+                  <Block className="h-6 w-12 shrink-0 rounded-full" />
+                </div>
+
+                <Block className="mt-3 h-4 w-full max-w-[145px] rounded-md" />
+              </div>
+
+              <div className="flex shrink-0 items-center gap-2">
+                <Block className="h-[38px] w-[86px] rounded-xl" />
+                <Block className="h-[38px] w-[66px] rounded-xl" />
+              </div>
+            </div>
+            <div className="mt-3 flex items-center gap-4">
+              <Block className="h-4 w-24 rounded-md" />
+              <Block className="h-4 w-20 rounded-md" />
+              <Block className="ml-auto h-4 w-28 rounded-md" />
+            </div>
+            <Block className="mt-1 h-4 w-16 rounded-md" />
+          </Card>
+        ))}
+      </div>
+    </>
+  );
+}
+
 export function routeKind(path) {
   if (/^\/(?:admin\/)?tasks\/[^/]+$/.test(path)) return 'task-detail';
   if (/^\/departments\/[^/]+\/projects\/[^/]+$/.test(path))
@@ -2422,6 +2499,7 @@ export default function RouteRefreshSkeleton() {
   else if (kind === 'department-projects')
     body = <DepartmentProjectsSkeleton />;
   else if (kind === 'task-detail') body = <TaskDetails />;
+  else if (kind === 'feature-flags') body = <FeatureFlagsSkeleton />;
   else if (kind === 'ai-certificates') body = <AICertificatesSkeleton />;
   else if (kind === 'quick-generate') body = <QuickGenerateSkeleton />;
   else if (kind === 'bulk-generate') body = <BulkGenerateSkeleton />;
