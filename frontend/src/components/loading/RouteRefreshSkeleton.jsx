@@ -641,28 +641,6 @@ function TaskDetails() {
     </div>
   );
 }
-function FormPage({ tabs = false }) {
-  return (
-    <>
-      <Header actions={0} />
-      {tabs && (
-        <div className="mb-6 flex flex-wrap gap-2">
-          {Array.from({ length: 9 }, (_, i) => (
-            <Block key={i} className="h-9 w-28" />
-          ))}
-        </div>
-      )}
-      <div className="grid gap-6 lg:grid-cols-5">
-        <Card className="min-h-[650px] p-6 lg:col-span-2">
-          <Lines count={12} />
-        </Card>
-        <Card className="min-h-[650px] p-6 lg:col-span-3">
-          <Lines count={8} />
-        </Card>
-      </div>
-    </>
-  );
-}
 function Generic({ cols = 5 }) {
   return (
     <>
@@ -2261,6 +2239,122 @@ function CanvaTemplatesSkeleton() {
   );
 }
 
+function AICertificatesSkeleton() {
+  const tabWidths = [
+    'w-[121px]',
+    'w-[100px]',
+    'w-[131px]',
+    'w-[129px]',
+    'w-[149px]',
+    'w-[131px]',
+    'w-[149px]',
+    'w-[149px]',
+    'w-[96px]',
+  ];
+  const pairedFields = [
+    ['w-14', 'w-16'],
+    ['w-14', 'w-12'],
+    ['w-16', 'w-12'],
+    ['w-20', 'w-20'],
+  ];
+
+  return (
+    <>
+      <div className="mb-7 flex items-center gap-4">
+        <Block className="h-12 w-12 shrink-0 rounded-2xl" />
+        <div>
+          <div className="sm:hidden">
+            <Block className="h-9 w-[235px] rounded-xl" />
+            <Block className="mt-2 h-9 w-[170px] rounded-xl" />
+            <Block className="mt-3 h-4 w-[285px] rounded-md" />
+            <Block className="mt-2 h-4 w-[155px] rounded-md" />
+          </div>
+          <div className="hidden sm:block">
+            <Block className="h-10 w-[415px] max-w-[68vw] rounded-xl" />
+            <Block className="mt-3 h-5 w-[510px] max-w-[72vw] rounded-md" />
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-7xl px-4 pb-8 pt-8">
+        <div className="mb-7 flex flex-wrap gap-x-2 gap-y-3">
+          {tabWidths.map((width, index) => (
+            <Block
+              key={`${width}-${index}`}
+              className={`h-[33px] ${width} rounded-lg ${
+                index === 0 ? 'bg-indigo-500/70 dark:bg-indigo-500/70' : ''
+              }`}
+            />
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-5">
+          <div className="lg:col-span-2">
+            <Card className="p-6">
+              <Block className="mb-5 h-7 w-24 rounded-lg" />
+              <div className="space-y-4">
+                {pairedFields.slice(0, 1).map((row, rowIndex) => (
+                  <div
+                    key={rowIndex}
+                    className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+                  >
+                    {row.map((width, fieldIndex) => (
+                      <div key={`${width}-${fieldIndex}`}>
+                        <Block className={`mb-1.5 h-4 ${width} rounded-md`} />
+                        <Block className="h-[44px] w-full rounded-xl" />
+                      </div>
+                    ))}
+                  </div>
+                ))}
+
+                <div>
+                  <Block className="mb-1.5 h-4 w-24 rounded-md" />
+                  <Block className="h-[84px] w-full rounded-xl" />
+                </div>
+
+                {pairedFields.slice(1).map((row, rowIndex) => (
+                  <div
+                    key={rowIndex}
+                    className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+                  >
+                    {row.map((width, fieldIndex) => (
+                      <div key={`${width}-${fieldIndex}`}>
+                        <Block className={`mb-1.5 h-4 ${width} rounded-md`} />
+                        <Block className="h-[44px] w-full rounded-xl" />
+                      </div>
+                    ))}
+                  </div>
+                ))}
+
+                <div>
+                  <Block className="mb-1.5 h-4 w-12 rounded-md" />
+                  <Block className="h-[44px] w-full rounded-xl" />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Block className="h-4 w-4 shrink-0 rounded-md" />
+                  <Block className="h-4 w-40 rounded-md" />
+                </div>
+                <Block className="h-[46px] w-full rounded-xl" />
+              </div>
+            </Card>
+          </div>
+
+          <div className="lg:col-span-3">
+            <Card className="min-h-[414px] p-6">
+              <Block className="h-7 w-16 rounded-lg" />
+              <div className="flex min-h-[285px] translate-y-[40px] flex-col items-center justify-center text-center">
+                <Block className="h-12 w-12 rounded-2xl" />
+                <Block className="mt-4 h-5 w-52 rounded-md" />
+                <Block className="mt-3 h-4 w-40 rounded-md" />
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 export function routeKind(path) {
   if (/^\/(?:admin\/)?tasks\/[^/]+$/.test(path)) return 'task-detail';
   if (/^\/departments\/[^/]+\/projects\/[^/]+$/.test(path))
@@ -2328,7 +2422,7 @@ export default function RouteRefreshSkeleton() {
   else if (kind === 'department-projects')
     body = <DepartmentProjectsSkeleton />;
   else if (kind === 'task-detail') body = <TaskDetails />;
-  else if (kind === 'ai-certificates') body = <FormPage tabs />;
+  else if (kind === 'ai-certificates') body = <AICertificatesSkeleton />;
   else if (kind === 'quick-generate') body = <QuickGenerateSkeleton />;
   else if (kind === 'bulk-generate') body = <BulkGenerateSkeleton />;
   else if (kind === 'audit') body = <AuditLogSkeleton />;

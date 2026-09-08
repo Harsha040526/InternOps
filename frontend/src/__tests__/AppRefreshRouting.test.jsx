@@ -240,6 +240,46 @@ describe('refresh loading and route preservation contract', () => {
     expect(canvaTemplates).toContain('flex flex-col gap-3 sm:flex-row');
   });
 
+  it('matches the AI Certificates toolbar, form, and independent Results workspace', () => {
+    const aiCertificates = read('src/pages/admin/AICertificates.jsx');
+    expect(skeleton).toContain('function AICertificatesSkeleton()');
+    expect(skeleton).toContain("kind === 'ai-certificates'");
+    expect(skeleton).toContain('<AICertificatesSkeleton />');
+    expect(skeleton).toContain("'w-[121px]'");
+    expect(skeleton).toContain("'w-[149px]'");
+    expect(skeleton.match(/'w-\[149px\]'/g)).toHaveLength(3);
+    expect(skeleton).toContain("'w-[96px]'");
+    expect(skeleton).toContain('h-[33px] ${width} rounded-lg');
+    expect(skeleton).toContain('h-10 w-[415px] max-w-[68vw]');
+    expect(skeleton).toContain('w-[510px] max-w-[72vw]');
+    expect(skeleton).toContain('className="sm:hidden"');
+    expect(skeleton).toContain('h-9 w-[235px] rounded-xl');
+    expect(skeleton).toContain('mt-2 h-9 w-[170px] rounded-xl');
+    expect(skeleton).toContain('mt-3 h-4 w-[285px] rounded-md');
+    expect(skeleton).toContain('mt-2 h-4 w-[155px] rounded-md');
+    expect(skeleton).toContain('className="hidden sm:block"');
+    expect(skeleton).toContain('mb-7 flex flex-wrap gap-x-2 gap-y-3');
+    expect(skeleton).toContain(
+      'grid grid-cols-1 items-start gap-6 lg:grid-cols-5'
+    );
+    expect(skeleton).toContain('mb-5 h-7 w-24 rounded-lg');
+    expect(skeleton).toContain('mb-1.5 h-4 ${width}');
+    expect(skeleton).toContain('h-[44px] w-full rounded-xl');
+    expect(skeleton).toContain('h-[84px] w-full rounded-xl');
+    expect(skeleton).toContain('h-[46px] w-full rounded-xl');
+    expect(skeleton).toContain('min-h-[414px] p-6');
+    expect(skeleton).toContain('h-7 w-16 rounded-lg');
+    expect(skeleton).toContain('min-h-[285px] translate-y-[40px]');
+    expect(aiCertificates).not.toContain('className="animate-fade-in-up"');
+    expect(aiCertificates).toContain('flex flex-wrap gap-x-2 gap-y-3');
+    expect(aiCertificates).toContain('whitespace-nowrap');
+    expect(aiCertificates).toContain(
+      'grid grid-cols-1 items-start gap-6 lg:grid-cols-5'
+    );
+    expect(aiCertificates).toContain('min-h-[414px] p-6');
+    expect(aiCertificates).toContain('min-h-[315px]');
+  });
+
   it('covers nested department and role-specific refresh structures', () => {
     expect(skeleton).toContain("'project-detail'");
     expect(skeleton).toContain("'department-projects'");
