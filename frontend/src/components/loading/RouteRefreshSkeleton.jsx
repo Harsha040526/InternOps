@@ -2103,6 +2103,82 @@ function QuickGenerateSkeleton() {
   );
 }
 
+function CertificatesSkeleton() {
+  const columns = '24% 32% 13% 12% 12% 7%';
+
+  return (
+    <>
+      {/* Certificates page header and its two real actions. */}
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-4">
+          <Block className="h-12 w-12 shrink-0 rounded-2xl" />
+          <div>
+            <Block className="h-10 w-52 rounded-xl" />
+            <Block className="mt-3 h-5 w-[330px] max-w-[70vw] rounded-md" />
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-3 sm:-mt-8">
+          <Block className="h-[38px] w-[135px] rounded-xl" />
+          <Block className="h-[38px] w-[184px] rounded-xl" />
+        </div>
+      </div>
+
+      {/* Search card and inset search control. */}
+      <Card className="-mt-1 mb-6 p-4">
+        <div className="flex h-[46px] items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 dark:border-slate-700 dark:bg-slate-800">
+          <Block className="h-5 w-5 shrink-0 rounded-md" />
+          <Block className="h-5 w-[310px] max-w-[70%] rounded-md" />
+        </div>
+      </Card>
+
+      {/* Six-column certificate table matching the loaded page. */}
+      <Card>
+        <div className="overflow-x-auto">
+          <div className="min-w-[900px]">
+            <div
+              className="grid h-[52px] items-center border-b border-slate-200 bg-slate-50 px-4 dark:border-slate-700 dark:bg-slate-950"
+              style={{ gridTemplateColumns: columns }}
+            >
+              {['w-20', 'w-14', 'w-12', 'w-14', 'w-10', 'w-14'].map(
+                (width, index) => (
+                  <Block
+                    key={`${width}-${index}`}
+                    className={`h-5 ${width} rounded-md ${index === 5 ? 'ml-auto' : ''}`}
+                  />
+                )
+              )}
+            </div>
+
+            {Array.from({ length: 6 }, (_, row) => (
+              <div
+                key={row}
+                className="grid h-[68px] items-center border-b border-slate-100 px-4 last:border-0 dark:border-slate-700"
+                style={{ gridTemplateColumns: columns }}
+              >
+                <div className="flex min-w-0 items-center gap-3">
+                  <Block className="h-9 w-9 shrink-0 rounded-full" />
+                  <div className="min-w-0 flex-1">
+                    <Block className="h-5 w-32 max-w-full rounded-md" />
+                    <Block className="mt-1 h-4 w-40 max-w-full rounded-md" />
+                  </div>
+                </div>
+                <Block className="h-5 w-[88%] max-w-full rounded-md" />
+                <Block className="h-7 w-24 rounded-full" />
+                <Block className="h-7 w-24 rounded-full" />
+                <Block className="h-5 w-24 rounded-md" />
+                <div className="ml-auto flex items-center gap-2">
+                  <Block className="h-8 w-8 rounded-lg" />
+                  <Block className="h-8 w-8 rounded-lg" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>{' '}
+      </Card>
+    </>
+  );
+}
+
 export function routeKind(path) {
   if (/^\/(?:admin\/)?tasks\/[^/]+$/.test(path)) return 'task-detail';
   if (/^\/departments\/[^/]+\/projects\/[^/]+$/.test(path))
@@ -2175,7 +2251,7 @@ export default function RouteRefreshSkeleton() {
   else if (kind === 'bulk-generate') body = <FormPage />;
   else if (kind === 'audit') body = <AuditLogSkeleton />;
   else if (kind === 'assistant') body = <AssistantSkeleton />;
-  else if (kind === 'certificates') body = <Generic cols={6} />;
+  else if (kind === 'certificates') body = <CertificatesSkeleton />;
   else body = <Generic />;
   return (
     <section

@@ -226,6 +226,7 @@ const COORDINATED_LOADING_ROUTES = new Set([
   '/hr',
   '/profile',
   '/quick-generate',
+  '/certificates',
   '/tasks',
   '/notifications',
   '/sessions',

@@ -148,6 +148,38 @@ describe('refresh loading and route preservation contract', () => {
     expect(quickGenerate).toContain('<CustomSelect');
   });
 
+  it('coordinates Certificates loading and matches its exact table workspace', () => {
+    const layout = read('src/layouts/DashboardLayout.jsx');
+    const certificates = read('src/pages/admin/Certificates.jsx');
+    expect(skeleton).toContain('function CertificatesSkeleton()');
+    expect(skeleton).toContain("const columns = '24% 32% 13% 12% 12% 7%'");
+    expect(skeleton).toContain('h-10 w-52 rounded-xl');
+    expect(skeleton).toContain('w-[330px] max-w-[70vw]');
+    expect(skeleton).toContain('flex flex-wrap items-center gap-3 sm:-mt-8');
+    expect(skeleton).toContain('h-[38px] w-[135px]');
+    expect(skeleton).toContain('-mt-1 mb-6 p-4');
+    expect(skeleton).toContain('overflow-x-auto');
+    expect(skeleton).toContain('min-w-[900px]');
+    expect(skeleton).toContain('h-[38px] w-[184px]');
+    expect(skeleton).toContain('h-[46px] items-center gap-3');
+    expect(skeleton).toContain('h-[52px] items-center border-b');
+    expect(skeleton).toContain('h-[68px] items-center');
+    expect(skeleton).toContain('h-9 w-9 shrink-0 rounded-full');
+    expect(skeleton).toContain('mt-1 h-4 w-40');
+    expect(skeleton).toContain('ml-auto flex items-center gap-2');
+    expect(skeleton).toContain("kind === 'certificates'");
+    expect(skeleton).toContain('<CertificatesSkeleton />');
+    expect(layout).toContain("'/certificates'");
+    expect(certificates).toContain(
+      'useRouteInitialLoading(certificatesInitialLoading)'
+    );
+    expect(certificates).toContain('isLoading && !certsData');
+    expect(certificates).not.toContain(
+      '<Spinner label="Loading certificates..." />'
+    );
+    expect(certificates).not.toContain('className="animate-fade-in-up"');
+  });
+
   it('covers nested department and role-specific refresh structures', () => {
     expect(skeleton).toContain("'project-detail'");
     expect(skeleton).toContain("'department-projects'");
