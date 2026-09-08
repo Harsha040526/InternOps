@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   User,
   Camera,
-  Trash2,
+  X,
   Pencil,
   Lock,
   CheckCircle2,
@@ -14,6 +14,7 @@ import {
   MapPin,
   CalendarDays,
   BriefcaseBusiness,
+  Hash,
   MonitorSmartphone,
   ArrowRight,
 } from 'lucide-react';
@@ -31,6 +32,7 @@ import {
 } from '../components/ui';
 import useAuthStore from '../store/auth';
 import useFeatureFlagsStore from '../store/featureFlags';
+import { useRouteInitialLoading } from '../components/loading/RouteInitialLoading';
 
 const ROLE_COLOR = {
   ADMIN: 'purple',
@@ -67,6 +69,8 @@ function initials(name, email) {
 }
 
 export default function Profile() {
+  const hydrated = useAuthStore((s) => s.hydrated);
+  const accessToken = useAuthStore((s) => s.accessToken);
   const queryClient = useQueryClient();
   const user = useAuthStore((s) => s.user);
   const setAuth = useAuthStore((s) => s.setAuth);
@@ -90,6 +94,7 @@ export default function Profile() {
   } = useQuery({
     queryKey: ['myProfile'],
     queryFn: () => api.get('/users/me').then((res) => res.data),
+    enabled: hydrated && !!accessToken,
   });
 
   useEffect(() => {
@@ -167,13 +172,21 @@ export default function Profile() {
       const form = new FormData();
       form.append('file', file);
 
-      return api.post('/uploads/avatar', form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      return api.post('/uploads/avatar', form);
     },
-    onSuccess: () => {
+    onSuccess: (res) => {
       flash('Avatar updated successfully');
+      const newAvatarUrl = res.data?.avatar_url;
+      if (user && newAvatarUrl) {
+        setAuth({
+          user: {
+            ...user,
+            avatar_url: newAvatarUrl,
+          },
+        });
+      }
       queryClient.invalidateQueries({ queryKey: ['myProfile'] });
+      queryClient.invalidateQueries({ queryKey: ['me'] });
     },
     onError: (err) =>
       setError(err.response?.data?.error || 'Avatar upload failed'),
@@ -215,17 +228,12 @@ export default function Profile() {
   const isStrongPassword = Object.values(passwordChecks).every(Boolean);
   const passwordsMatch =
     confirmPassword.length > 0 && newPassword === confirmPassword;
-  if (isLoading) {
-    return (
-      <div className="flex justify-center p-12">
-        <Spinner label="Loading profile..." />
-      </div>
-    );
-  }
-
+  useRouteInitialLoading(
+    !isError && (!hydrated || !accessToken || isLoading || !profile)
+  );
   if (isError) {
     return (
-      <div className="mx-auto max-w-7xl animate-fade-in-up">
+      <div className="mx-auto max-w-7xl">
         <div className="mb-5 flex items-center gap-3">
           <div className="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/60 text-indigo-600 dark:text-indigo-300 flex items-center justify-center shadow-sm">
             <User className="w-6 h-6" />
@@ -276,6 +284,15 @@ export default function Profile() {
     POSITION_LABEL[profile?.role] || profile?.position || 'Not added';
   const accountDetails = [
     { label: scopeLabel, value: accessScope, icon: Building2 },
+    ...(!isAdmin
+      ? [
+          {
+            label: 'Intern Code',
+            value: profile?.intern_code || 'Not provided',
+            icon: Hash,
+          },
+        ]
+      : []),
     { label: 'Position', value: positionLabel, icon: BriefcaseBusiness },
     ...(profile?.location
       ? [{ label: 'Location', value: profile.location, icon: MapPin }]
@@ -288,7 +305,7 @@ export default function Profile() {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl animate-fade-in-up">
+    <div className="mx-auto max-w-7xl">
       {/* Professional Header Block */}
       <div className="mb-5 flex items-center gap-3">
         <div className="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/60 text-indigo-600 dark:text-indigo-300 flex items-center justify-center shadow-sm">
@@ -352,6 +369,26 @@ export default function Profile() {
                     {initials(profile?.full_name, profile?.email)}
                   </div>
                 )}
+                {profile?.avatar_url && (
+                  <button
+                    type="button"
+                    onClick={() => setShowRemoveAvatarModal(true)}
+                    disabled={avatarMut.isPending || removeAvatarMut.isPending}
+                    title="Remove profile image"
+                    aria-label="Remove profile image"
+                    className={`absolute -top-2 -right-2 z-10 flex h-8 w-8 items-center justify-center rounded-2xl border border-slate-200 bg-white text-rose-500 shadow-lg transition-all hover:scale-105 hover:bg-rose-50 hover:text-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-500/50 dark:border-slate-700 dark:bg-slate-800 dark:text-rose-400 dark:hover:bg-rose-950/40 dark:hover:text-rose-300 ${
+                      avatarMut.isPending || removeAvatarMut.isPending
+                        ? 'cursor-not-allowed opacity-60'
+                        : 'cursor-pointer'
+                    }`}
+                  >
+                    {removeAvatarMut.isPending ? (
+                      <span className="text-[10px] font-semibold">...</span>
+                    ) : (
+                      <X className="h-4 w-4" />
+                    )}
+                  </button>
+                )}
                 <label
                   className={`absolute -bottom-2 -right-2 flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-indigo-600 shadow-lg transition-all dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-300 ${
                     avatarMut.isPending
@@ -391,17 +428,6 @@ export default function Profile() {
                   />
                 </label>
               </div>
-              {profile?.avatar_url && (
-                <button
-                  type="button"
-                  onClick={() => setShowRemoveAvatarModal(true)}
-                  disabled={avatarMut.isPending || removeAvatarMut.isPending}
-                  className="mt-3 inline-flex w-full items-center justify-center gap-1.5 whitespace-nowrap text-xs font-semibold text-red-600 transition-colors hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-60 dark:text-red-400 dark:hover:text-red-300"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                  {removeAvatarMut.isPending ? 'Removing...' : 'Remove image'}
-                </button>
-              )}
             </div>
             <div className="min-w-0">
               <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -429,7 +455,7 @@ export default function Profile() {
           </div>
           <div
             className={`grid shrink-0 grid-cols-1 gap-2 ${
-              accountDetails.length === 4
+              accountDetails.length >= 4
                 ? 'sm:grid-cols-2 xl:w-[500px]'
                 : 'sm:grid-cols-3 xl:w-[500px]'
             }`}

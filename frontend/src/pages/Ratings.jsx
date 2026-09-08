@@ -50,6 +50,8 @@ export default function Ratings({
   deptId: propDeptId,
   roster = [],
 } = {}) {
+  const hydrated = useAuthStore((s) => s.hydrated);
+  const accessToken = useAuthStore((s) => s.accessToken);
   const { deptId: routeDeptId } = useParams();
   const deptId = propDeptId || routeDeptId;
   const user = useAuthStore((s) => s.user);
@@ -64,7 +66,8 @@ export default function Ratings({
   const [viewDepartmentId, setViewDepartmentId] = useState(requestedDeptId);
   const [viewAll, setViewAll] = useState(false);
   const today = new Date().toISOString().slice(0, 10);
-  const [selectedMonth, setSelectedMonth] = useState(today.slice(0, 7));
+  const currentMonth = today.slice(0, 7);
+  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
   const [selectedYear, selectedMonthNumber] = selectedMonth
     .split('-')
     .map(Number);
@@ -109,13 +112,13 @@ export default function Ratings({
   const { data: team = [] } = useQuery({
     queryKey: ['teamMembers'],
     queryFn: () => api.get('/team/members').then((res) => res.data),
-    enabled: isManager && !isProjectView,
+    enabled: hydrated && !!accessToken && isManager && !isProjectView,
   });
 
   const { data: departments = [] } = useQuery({
     queryKey: ['departments'],
     queryFn: () => api.get('/departments').then((res) => res.data),
-    enabled: isManager && !isProjectView,
+    enabled: hydrated && !!accessToken && isManager && !isProjectView,
   });
   useEffect(() => {
     if (isAdmin || isProjectView || activeDeptId || departments.length === 0)
@@ -126,6 +129,7 @@ export default function Ratings({
   const {
     data: sheetData,
     isLoading: sheetIsLoading,
+    isFetching: sheetIsFetching,
     error: sheetError,
     refetch: refetchSheet,
   } = useQuery({
@@ -138,6 +142,8 @@ export default function Ratings({
         .then((res) => res.data),
     enabled: viewAll && !!activeDeptId,
   });
+  const validSheetData = sheetData || null;
+  const ratingsSheetIsPending = viewAll && !!activeDeptId && sheetIsLoading;
 
   const {
     data: ratings,
@@ -146,7 +152,7 @@ export default function Ratings({
   } = useQuery({
     queryKey: ['ratings', viewUserId],
     queryFn: () => api.get(`/ratings/${viewUserId}`).then((res) => res.data),
-    enabled: !!viewUserId && !viewAll,
+    enabled: hydrated && !!accessToken && !!viewUserId && !viewAll,
   });
 
   const handleViewDepartmentChange = (dId) => {
@@ -218,7 +224,7 @@ export default function Ratings({
   const activeDepartment = departments.find((d) => d.id === activeDeptId);
 
   return (
-    <div className="animate-fade-in-up">
+    <div>
       {/* Admin Department Navigation Context Banner */}
       {isAdmin && activeDeptId && !isProjectView && (
         <div className="mb-6 p-4 rounded-3xl bg-gradient-to-r from-slate-900 to-indigo-950 text-white shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-indigo-500/20 animate-fade-in">
@@ -432,10 +438,12 @@ export default function Ratings({
             <div className="mb-6">
               <DepartmentRatingsSheet
                 departmentName={activeDepartment?.name}
-                data={sheetData}
+                data={validSheetData}
                 selectedMonth={selectedMonth}
+                currentMonth={currentMonth}
                 onMonthChange={setSelectedMonth}
-                isLoading={sheetIsLoading}
+                isLoading={ratingsSheetIsPending || sheetIsLoading}
+                isRefreshing={sheetIsFetching && !!validSheetData}
                 error={sheetError}
                 onRetry={refetchSheet}
               />
@@ -648,10 +656,12 @@ export default function Ratings({
             <div className="mb-6">
               <DepartmentRatingsSheet
                 departmentName={activeDepartment?.name}
-                data={sheetData}
+                data={validSheetData}
                 selectedMonth={selectedMonth}
+                currentMonth={currentMonth}
                 onMonthChange={setSelectedMonth}
-                isLoading={sheetIsLoading}
+                isLoading={ratingsSheetIsPending || sheetIsLoading}
+                isRefreshing={sheetIsFetching && !!validSheetData}
                 error={sheetError}
                 onRetry={refetchSheet}
               />
