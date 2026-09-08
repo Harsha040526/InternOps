@@ -1887,6 +1887,160 @@ function AuditLogSkeleton() {
   );
 }
 
+function AssistantSkeleton() {
+  const moduleWidths = ['w-36', 'w-32', 'w-40', 'w-36', 'w-24', 'w-28'];
+
+  return (
+    <div className="h-[calc(100vh-6.5rem)] min-h-[680px] max-h-[calc(100vh-6.5rem)]">
+      <div className="flex h-full flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)] dark:border-slate-700 dark:bg-slate-950 dark:shadow-none">
+        {/*
+          Assistant header height: min-h-[98px] mirrors the loaded gradient banner.
+          Adjust this value only when the real Assistant header height changes.
+        */}
+        <div className="relative min-h-[98px] shrink-0 overflow-hidden bg-gradient-to-r from-indigo-600 via-blue-600 to-violet-600">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.28),transparent_32%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.18),transparent_28%)]" />
+          <div className="relative flex flex-col justify-between gap-4 px-5 py-4 md:px-7 lg:flex-row lg:items-center">
+            <div className="flex items-center gap-4">
+              <Block className="h-12 w-12 shrink-0 rounded-3xl bg-white/20 dark:bg-white/20" />
+              <div>
+                <div className="flex items-center gap-2">
+                  <Block className="h-2.5 w-2.5 rounded-full bg-emerald-300 dark:bg-emerald-300" />
+                  <Block className="h-8 w-[250px] max-w-[58vw] rounded-lg bg-white/25 dark:bg-white/25" />
+                </div>
+                <Block className="mt-2 h-4 w-[560px] max-w-[70vw] rounded-md bg-indigo-100/30 dark:bg-indigo-100/30" />
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Block className="h-[51px] w-44 rounded-2xl bg-slate-900/75 dark:bg-slate-900/75" />
+              <Block className="h-11 w-11 rounded-2xl bg-white/20 dark:bg-white/20" />
+            </div>
+          </div>
+        </div>
+
+        {/*
+          Assistant tabs: h-[46px] keeps the chat workspace aligned with the loaded view.
+        */}
+        <div className="grid shrink-0 grid-cols-3 border-b border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+          {['w-20', 'w-28', 'w-24'].map((width, index) => (
+            <div
+              key={width}
+              className={`flex h-[46px] items-center justify-center ${
+                index === 0
+                  ? 'border-b-2 border-indigo-600 bg-indigo-50/80 dark:bg-indigo-950/30'
+                  : ''
+              }`}
+            >
+              <Block className={`h-5 ${width} rounded-md`} />
+            </div>
+          ))}
+        </div>
+
+        <div className="flex min-h-0 flex-1 overflow-hidden">
+          {/* Main chat workspace. */}
+          <div className="flex min-w-0 flex-1 flex-col overflow-hidden bg-slate-50 dark:bg-slate-950">
+            <div className="min-h-0 flex-1 overflow-hidden px-4 py-5 md:px-6">
+              <div className="max-w-5xl">
+                {/* Welcome card height: h-[307px] mirrors the loaded introductory message. */}
+                <div className="h-[307px] w-[76%] max-w-[760px] overflow-hidden rounded-[1.5rem] rounded-bl-md border border-slate-200 bg-white px-4 py-4 dark:border-slate-700 dark:bg-slate-900">
+                  <Block className="h-5 w-[360px] max-w-full rounded-md" />
+                  <Block className="mt-5 h-4 w-[610px] max-w-full rounded-md" />
+                  <Block className="mt-3 h-4 w-[470px] max-w-full rounded-md" />
+                  <div className="mt-4 space-y-2.5">
+                    {['w-52', 'w-72', 'w-80', 'w-64'].map((width) => (
+                      <Block
+                        key={width}
+                        className={`h-4 ${width} max-w-full rounded-md`}
+                      />
+                    ))}
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {['w-36', 'w-32', 'w-40', 'w-36', 'w-28'].map((width) => (
+                      <Block
+                        key={width}
+                        className={`h-8 ${width} rounded-full`}
+                      />
+                    ))}
+                  </div>
+                  <Block className="mt-3 h-3 w-16 rounded-md" />
+                </div>
+              </div>
+            </div>
+
+            {/* Quick actions and message composer. */}
+            <div className="shrink-0 border-t border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
+              <div className="flex gap-2 overflow-hidden px-4 py-3 md:px-6">
+                {['w-36', 'w-28', 'w-28', 'w-28', 'w-24', 'w-28'].map(
+                  (width, index) => (
+                    <Block
+                      key={`${width}-${index}`}
+                      className={`h-8 ${width} shrink-0 rounded-full`}
+                    />
+                  )
+                )}
+              </div>
+              <div className="flex items-end gap-3 px-4 pb-4 md:px-6">
+                <Block className="h-12 flex-1 rounded-3xl" />
+                <Block className="h-12 w-12 shrink-0 rounded-3xl bg-indigo-500/50 dark:bg-indigo-500/50" />
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop role insights and assistant modules. */}
+          <div className="hidden w-[330px] shrink-0 flex-col gap-4 overflow-hidden border-l border-slate-200 bg-slate-50/80 p-4 dark:border-slate-700 dark:bg-slate-950/60 xl:flex">
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+              <div className="mb-5 flex items-center gap-3">
+                <Block className="h-11 w-11 shrink-0 rounded-2xl" />
+                <div className="space-y-2">
+                  <Block className="h-3 w-24 rounded-md" />
+                  <Block className="h-6 w-20 rounded-md" />
+                </div>
+              </div>
+              <Block className="mb-3 h-4 w-20 rounded-md" />
+              <div className="space-y-3">
+                {Array.from({ length: 5 }, (_, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <Block className="h-4 w-4 shrink-0 rounded-full" />
+                    <Block
+                      className={`h-4 ${index % 2 === 0 ? 'w-36' : 'w-44'} rounded-md`}
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 border-t border-slate-200 pt-4 dark:border-slate-700">
+                <Block className="mb-3 h-4 w-24 rounded-md" />
+                <div className="flex items-center gap-2">
+                  <Block className="h-4 w-4 shrink-0 rounded-full" />
+                  <Block className="h-4 w-52 rounded-md" />
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+              <div className="mb-5 flex items-center gap-3">
+                <Block className="h-11 w-11 shrink-0 rounded-2xl" />
+                <div className="space-y-2">
+                  <Block className="h-3 w-32 rounded-md" />
+                  <Block className="h-6 w-44 rounded-md" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                {moduleWidths.map((width) => (
+                  <div
+                    key={width}
+                    className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-3 dark:border-slate-700 dark:bg-slate-800/70"
+                  >
+                    <Block className={`h-4 ${width} max-w-full rounded-md`} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function routeKind(path) {
   if (/^\/(?:admin\/)?tasks\/[^/]+$/.test(path)) return 'task-detail';
   if (/^\/departments\/[^/]+\/projects\/[^/]+$/.test(path))
@@ -1958,6 +2112,7 @@ export default function RouteRefreshSkeleton() {
   else if (['quick-generate', 'bulk-generate'].includes(kind))
     body = <FormPage />;
   else if (kind === 'audit') body = <AuditLogSkeleton />;
+  else if (kind === 'assistant') body = <AssistantSkeleton />;
   else if (kind === 'certificates') body = <Generic cols={6} />;
   else body = <Generic />;
   return (

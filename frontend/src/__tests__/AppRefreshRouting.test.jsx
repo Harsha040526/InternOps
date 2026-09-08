@@ -85,6 +85,16 @@ describe('refresh loading and route preservation contract', () => {
 
     expect(skeleton).toContain("const columns = '17fr 23fr 20fr 16fr 24fr'");
   });
+
+  it('uses the dedicated Assistant workspace skeleton for lazy loading', () => {
+    expect(skeleton).toContain('function AssistantSkeleton()');
+    expect(skeleton).toContain("kind === 'assistant'");
+    expect(skeleton).toContain('<AssistantSkeleton />');
+    expect(skeleton).toContain('bg-gradient-to-r from-indigo-600');
+    expect(skeleton).toContain('grid shrink-0 grid-cols-3');
+    expect(skeleton).toContain('hidden w-[330px]');
+  });
+
   it('covers nested department and role-specific refresh structures', () => {
     expect(skeleton).toContain("'project-detail'");
     expect(skeleton).toContain("'department-projects'");
