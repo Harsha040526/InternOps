@@ -2372,7 +2372,7 @@ function FeatureFlagsSkeleton() {
         <Block className="mt-1 h-[42px] w-[110px] rounded-xl" />
       </div>
 
-      <div className="mb-[34px] grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mb-[34px] grid grid-cols-3 gap-4">
         {['blue', 'green', 'rose'].map((tone) => (
           <div
             key={tone}
@@ -2386,7 +2386,7 @@ function FeatureFlagsSkeleton() {
           >
             <Block className="mb-4 h-10 w-10 rounded-2xl" />
             <Block className="h-8 w-8 rounded-lg" />
-            <Block className="mt-3 h-4 w-28 rounded-md" />
+            <Block className="mt-3 h-4 w-full max-w-28 rounded-md" />
           </div>
         ))}
       </div>
@@ -2395,7 +2395,7 @@ function FeatureFlagsSkeleton() {
         {cards.map((enabled, index) => (
           <Card
             key={index}
-            className={`relative h-[138px] overflow-hidden p-5 ${
+            className={`relative min-h-[214px] overflow-hidden p-5 xl:min-h-[158px] ${
               enabled ? 'dark:bg-slate-900' : 'dark:bg-slate-800/60'
             }`}
           >
@@ -2404,27 +2404,33 @@ function FeatureFlagsSkeleton() {
                 enabled ? 'bg-emerald-400' : 'bg-slate-500'
               }`}
             />
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
+                <div className="flex min-w-0 flex-wrap items-center gap-2">
                   <Block className="h-5 w-24 rounded-md" />
+
                   <Block className="h-6 w-12 shrink-0 rounded-full" />
                 </div>
 
                 <Block className="mt-3 h-4 w-full max-w-[145px] rounded-md" />
               </div>
 
-              <div className="flex shrink-0 items-center gap-2">
+              <div className="flex shrink-0 flex-wrap items-center gap-2 xl:justify-end">
                 <Block className="h-[38px] w-[86px] rounded-xl" />
+
                 <Block className="h-[38px] w-[66px] rounded-xl" />
               </div>
             </div>
-            <div className="mt-3 flex items-center gap-4">
+
+            <div className="mt-3 grid grid-cols-2 items-center gap-x-3 gap-y-2 xl:grid-cols-[auto_auto_1fr]">
               <Block className="h-4 w-24 rounded-md" />
+
               <Block className="h-4 w-20 rounded-md" />
-              <Block className="ml-auto h-4 w-28 rounded-md" />
+
+              <Block className="col-span-2 h-4 w-28 justify-self-end rounded-md xl:col-span-1" />
             </div>
-            <Block className="mt-1 h-4 w-16 rounded-md" />
+
+            <Block className="mt-3 h-4 w-16 rounded-md" />
           </Card>
         ))}
       </div>

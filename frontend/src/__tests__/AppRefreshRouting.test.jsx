@@ -251,24 +251,36 @@ describe('refresh loading and route preservation contract', () => {
     expect(skeleton).toContain('mb-9 flex flex-col justify-between gap-4');
     expect(skeleton).toContain('h-11 w-[230px] max-w-[60vw]');
     expect(skeleton).toContain('mt-1 h-[42px] w-[110px]');
-    expect(skeleton).toContain('mt-1 h-4 w-16 rounded-md');
+    expect(skeleton).toContain('mt-3 h-4 w-16 rounded-md');
     expect(skeleton).toContain('w-[410px] max-w-[72vw]');
-    expect(skeleton).toContain(
-      'mb-[34px] grid grid-cols-1 gap-4 sm:grid-cols-3'
-    );
+    expect(skeleton).toContain('mb-[34px] grid grid-cols-3 gap-4');
     expect(skeleton).toContain('h-8 w-8 rounded-lg');
-    expect(skeleton).toContain('mt-3 flex items-center gap-4');
+    expect(skeleton).toContain('mt-3 h-4 w-full max-w-28 rounded-md');
     expect(skeleton).toContain(
       'grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3'
     );
     expect(skeleton).toContain(
       'const cards = [true, true, false, true, true, false, false]'
     );
-    expect(skeleton).toContain('h-[138px] overflow-hidden p-5');
+    expect(skeleton).toContain(
+      'min-h-[214px] overflow-hidden p-5 xl:min-h-[158px]'
+    );
     expect(skeleton).toContain("enabled ? 'bg-emerald-400' : 'bg-slate-500'");
     expect(skeleton).toContain('h-[38px] w-[86px]');
+    expect(skeleton).toContain(
+      'flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between'
+    );
+    expect(skeleton).toContain(
+      'mt-3 grid grid-cols-2 items-center gap-x-3 gap-y-2 xl:grid-cols-[auto_auto_1fr]'
+    );
+    expect(skeleton).toContain(
+      'col-span-2 h-4 w-28 justify-self-end rounded-md xl:col-span-1'
+    );
     expect(skeleton).toContain('h-5 w-24 rounded-md');
     expect(skeleton).toContain('h-6 w-12 shrink-0 rounded-full');
+    expect(skeleton).toContain(
+      'flex shrink-0 flex-wrap items-center gap-2 xl:justify-end'
+    );
     expect(skeleton).toContain('mt-3 h-4 w-full max-w-[145px] rounded-md');
     expect(layout).toContain("'/feature-flags'");
     expect(featureFlags).toContain(
@@ -282,6 +294,26 @@ describe('refresh loading and route preservation contract', () => {
     expect(featureFlags).toContain('isError ? (');
     expect(featureFlags).toContain('Failed to load flags.');
     expect(featureFlags).toContain('Retry');
+    expect(featureFlags).toContain('fixed top-[4.25rem] right-4 z-[100]');
+    expect(featureFlags).toContain('sm:right-6 sm:max-w-md');
+    expect(featureFlags).toContain('min-w-0 break-words');
+    expect(featureFlags).toContain('px-5 py-3 text-sm');
+    expect(featureFlags).toContain("backgroundColor: toast.type === 'error'");
+    expect(featureFlags).toContain('bg-emerald-50 dark:bg-emerald-950');
+    expect(featureFlags).toContain('bg-rose-50 dark:bg-rose-950');
+    expect(featureFlags).toContain(
+      'mb-3 flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between'
+    );
+    expect(featureFlags).toContain('min-w-0 break-all font-mono');
+    expect(featureFlags).toContain(
+      'flex shrink-0 flex-wrap items-center gap-2 xl:justify-end'
+    );
+    expect(featureFlags).toContain(
+      'grid grid-cols-2 items-center gap-x-3 gap-y-2 text-xs'
+    );
+    expect(featureFlags).toContain(
+      'col-span-2 justify-self-end whitespace-nowrap text-right xl:col-span-1'
+    );
     expect(skeleton).toContain('else body = <Generic />;');
   });
   it('matches the AI Certificates toolbar, form, and independent Results workspace', () => {
