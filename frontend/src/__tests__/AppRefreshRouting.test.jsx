@@ -180,6 +180,34 @@ describe('refresh loading and route preservation contract', () => {
     expect(certificates).not.toContain('className="animate-fade-in-up"');
   });
 
+  it('coordinates Bulk Generate loading and matches its compact workflow skeleton', () => {
+    const layout = read('src/layouts/DashboardLayout.jsx');
+    const bulkGenerate = read('src/pages/admin/BulkGenerate.jsx');
+    expect(skeleton).toContain('function BulkGenerateSkeleton()');
+    expect(skeleton).toContain("kind === 'bulk-generate'");
+    expect(skeleton).toContain('<BulkGenerateSkeleton />');
+    expect(skeleton).toContain('max-w-6xl px-4 pb-8 pt-4 sm:pt-[28px]');
+    expect(skeleton).toContain('h-9 w-9 shrink-0 rounded-full sm:h-10 sm:w-10');
+    expect(skeleton).toContain('mx-2 h-1 w-12 rounded-full sm:w-[84px]');
+    expect(skeleton).toContain('h-[51px] w-full rounded-xl');
+    expect(skeleton).toContain('mt-[5px] p-5 sm:px-6 sm:pt-[29px] sm:pb-6');
+    expect(skeleton).not.toContain('h-[336px]');
+    expect(skeleton).toContain('mt-4 h-[42px] w-[135px]');
+    expect(layout).toContain("'/bulk-generate'");
+    expect(bulkGenerate).toContain(
+      'useRouteInitialLoading(bulkGenerateInitialLoading)'
+    );
+    expect(bulkGenerate).toContain('templatesLoading && !templatesData');
+    expect(bulkGenerate).not.toContain('<span>Loading templates...</span>');
+    expect(bulkGenerate).not.toContain('min-h-screen');
+    expect(bulkGenerate).toContain('max-w-6xl mx-auto px-4 pb-8 pt-4 sm:pt-6');
+    expect(bulkGenerate).toContain(
+      'mb-6 flex items-center justify-center sm:mb-7'
+    );
+    expect(bulkGenerate).toContain('w-12 sm:w-20 h-1 mx-2');
+    expect(bulkGenerate).toContain('dark:bg-slate-800');
+  });
+
   it('covers nested department and role-specific refresh structures', () => {
     expect(skeleton).toContain("'project-detail'");
     expect(skeleton).toContain("'department-projects'");

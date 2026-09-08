@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import useAuthStore from '../../store/auth';
 
@@ -2179,6 +2179,44 @@ function CertificatesSkeleton() {
   );
 }
 
+function BulkGenerateSkeleton() {
+  return (
+    <>
+      {/* Bulk Generate header. */}
+      <div className="mb-6 flex items-center gap-4">
+        <Block className="h-12 w-12 shrink-0 rounded-2xl" />
+        <Block className="h-10 w-[450px] max-w-[72vw] rounded-xl" />
+      </div>
+
+      <div className="mx-auto max-w-6xl px-4 pb-8 pt-4 sm:pt-[28px]">
+        {/* Three-step workflow progress. */}
+        <div className="mb-6 flex items-center justify-center sm:mb-7">
+          {[1, 2, 3].map((item) => (
+            <div key={item} className="flex min-w-0 items-center">
+              <Block
+                className={`h-9 w-9 shrink-0 rounded-full sm:h-10 sm:w-10 ${
+                  item === 1 ? 'bg-blue-500/70 dark:bg-blue-500/70' : ''
+                }`}
+              />
+              {item < 3 && (
+                <Block className="mx-2 h-1 w-12 rounded-full sm:w-[84px]" />
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Step 1 template-selection card. */}
+        <Card className="mt-[5px] p-5 sm:px-6 sm:pt-[29px] sm:pb-6">
+          <Block className="mb-5 h-7 w-56 max-w-full rounded-lg" />
+          <Block className="mb-3 h-5 w-52 max-w-full rounded-md" />
+          <Block className="h-[51px] w-full rounded-xl" />
+          <Block className="mt-4 h-[42px] w-[135px] rounded-lg" />
+        </Card>
+      </div>
+    </>
+  );
+}
+
 export function routeKind(path) {
   if (/^\/(?:admin\/)?tasks\/[^/]+$/.test(path)) return 'task-detail';
   if (/^\/departments\/[^/]+\/projects\/[^/]+$/.test(path))
@@ -2248,7 +2286,7 @@ export default function RouteRefreshSkeleton() {
   else if (kind === 'task-detail') body = <TaskDetails />;
   else if (kind === 'ai-certificates') body = <FormPage tabs />;
   else if (kind === 'quick-generate') body = <QuickGenerateSkeleton />;
-  else if (kind === 'bulk-generate') body = <FormPage />;
+  else if (kind === 'bulk-generate') body = <BulkGenerateSkeleton />;
   else if (kind === 'audit') body = <AuditLogSkeleton />;
   else if (kind === 'assistant') body = <AssistantSkeleton />;
   else if (kind === 'certificates') body = <CertificatesSkeleton />;
