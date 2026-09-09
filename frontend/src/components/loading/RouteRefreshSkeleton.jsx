@@ -2355,6 +2355,119 @@ function AICertificatesSkeleton() {
   );
 }
 
+function GithubSyncSkeleton() {
+  const tabs = [
+    'w-[120px]',
+    'w-[117px]',
+    'w-[135px]',
+    'w-[150px]',
+    'w-[143px]',
+  ];
+  return (
+    <>
+      <div className="mb-4 flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+        <div className="flex min-w-0 items-center gap-4">
+          <Block className="h-12 w-12 shrink-0 rounded-2xl" />
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-3">
+              <Block className="h-10 w-60 max-w-[62vw] rounded-xl" />
+              <Block className="h-6 w-[104px] rounded-full" />
+            </div>
+            <Block className="mt-3 h-5 w-[500px] max-w-[72vw] rounded-md" />
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-2 lg:-mt-2 lg:ml-auto lg:flex lg:justify-end">
+          <Block className="h-[37px] w-full rounded-xl lg:w-[138px]" />
+          <Block className="h-[37px] w-full rounded-xl lg:w-[110px]" />
+          <Block className="h-[37px] w-full rounded-xl lg:w-[124px]" />
+        </div>
+      </div>
+      <div className="mb-6 flex w-fit max-w-full gap-1 overflow-x-auto rounded-2xl bg-slate-100 p-1 dark:bg-slate-800">
+        {tabs.map((width, index) => (
+          <Block
+            key={index}
+            className={`h-[38px] ${width} shrink-0 rounded-xl`}
+          />
+        ))}
+      </div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }, (_, index) => (
+          <Card key={index} className="h-[112px] p-5">
+            <div className="flex h-full items-center gap-3">
+              <Block
+                className={`h-11 w-11 shrink-0 rounded-xl ${(
+                  <Block className="h-11 w-11 shrink-0 rounded-xl bg-slate-300/80 dark:bg-slate-600/80" />
+                )}`}
+              />
+              <div className="min-w-0 flex-1">
+                <Block className="h-4 w-28 rounded-md" />
+                <Block className="mt-2 h-7 w-24 rounded-lg" />
+                <Block className="mt-1 h-4 w-32 max-w-full rounded-md" />
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+      <div className="flex h-[86px] flex-wrap content-center items-center gap-2">
+        <Block className="h-[38px] w-[132px] rounded-xl" />
+        <Block className="h-[38px] w-[218px] rounded-xl" />
+        <Block className="h-[38px] w-[168px] rounded-xl" />
+      </div>
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {Array.from({ length: 2 }, (_, index) => (
+          <Card key={index} className="h-[97px] p-5">
+            <div className="flex h-full translate-y-1.5 flex-col justify-center">
+              <div className="flex items-center gap-2">
+                {/* Globe or chart icon */}
+                <Block className="h-5 w-5 shrink-0 rounded-md" />
+
+                {/* By Repository or By Platform */}
+                <Block className="h-5 w-[168px] rounded-md" />
+              </div>
+
+              <div className="mt-3 flex items-center justify-between gap-4">
+                {/* Repository name or Unspecified */}
+                <Block
+                  className={`h-5 rounded-md ${
+                    index === 0 ? 'w-[290px]' : 'w-[150px]'
+                  }`}
+                />
+
+                {/* 85 badge */}
+                <Block className="h-7 w-12 shrink-0 rounded-full" />
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+      <Card className="h-[173px] p-5">
+        <div>
+          <div className="flex items-center gap-2">
+            <Block className="h-5 w-5 shrink-0 rounded-md" />
+            <Block className="h-5 w-[218px] rounded-md" />
+          </div>
+
+          <Block className="mt-4 h-4 w-28 rounded-md" />
+
+          <div className="mt-2 flex items-center gap-3">
+            <Block className="h-[42px] min-w-0 flex-1 rounded-xl" />
+            <Block className="h-5 w-5 shrink-0 rounded-md" />
+          </div>
+
+          <div className="mt-3 flex items-center gap-3">
+            <Block className="h-3 w-3 shrink-0 rounded-full bg-red-400/80 dark:bg-red-500/80" />
+            <Block className="h-4 w-[145px] rounded-md" />
+
+            <Block className="h-4 w-1 rounded-md" />
+
+            <Block className="h-3 w-3 shrink-0 rounded-full bg-amber-400/80 dark:bg-amber-500/80" />
+            <Block className="h-4 w-[115px] rounded-md" />
+          </div>
+        </div>
+      </Card>
+    </>
+  );
+}
 function FeatureFlagsSkeleton() {
   const cards = [true, true, false, true, true, false, false];
 
@@ -2506,6 +2619,7 @@ export default function RouteRefreshSkeleton() {
     body = <DepartmentProjectsSkeleton />;
   else if (kind === 'task-detail') body = <TaskDetails />;
   else if (kind === 'feature-flags') body = <FeatureFlagsSkeleton />;
+  else if (kind === 'github-sync') body = <GithubSyncSkeleton />;
   else if (kind === 'ai-certificates') body = <AICertificatesSkeleton />;
   else if (kind === 'quick-generate') body = <QuickGenerateSkeleton />;
   else if (kind === 'bulk-generate') body = <BulkGenerateSkeleton />;

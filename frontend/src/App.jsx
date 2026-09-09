@@ -5,7 +5,7 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
-import { useEffect, lazy, Suspense } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import DashboardLayout from './layouts/DashboardLayout';
 import useAuthStore from './store/auth';
 import useFeatureFlagsStore from './store/featureFlags';
@@ -95,6 +95,7 @@ export default function App() {
   const logout = useAuthStore((s) => s.logout);
   const setSystemError = useAuthStore((s) => s.setSystemError);
   const systemError = useAuthStore((s) => s.systemError);
+  const [retryAfterSeconds, setRetryAfterSeconds] = useState(0);
   const hydrated = useAuthStore((s) => s.hydrated);
   const fetchFlags = useFeatureFlagsStore((s) => s.fetchFlags);
   const resetFlags = useFeatureFlagsStore((s) => s.reset);
@@ -138,6 +139,18 @@ export default function App() {
             logout();
             resetFlags();
           }
+        } else if (status === 429) {
+          const retryAfterHeader = Number(
+            err.response?.headers?.['retry-after']
+          );
+          const retryAfter =
+            Number.isFinite(retryAfterHeader) && retryAfterHeader > 0
+              ? Math.ceil(retryAfterHeader)
+              : 10;
+          setRetryAfterSeconds(retryAfter);
+          setSystemError(
+            `Too many requests. Please retry in ${retryAfter} seconds.`
+          );
         } else {
           setSystemError(
             'Service temporarily unavailable. Please try again later.'
@@ -149,6 +162,21 @@ export default function App() {
       });
   }, [logout, setAuth, setHydrated, setSystemError, fetchFlags, resetFlags]);
 
+  useEffect(() => {
+    if (!systemError || retryAfterSeconds <= 0) return undefined;
+    const timer = window.setInterval(() => {
+      setRetryAfterSeconds((seconds) => {
+        const next = Math.max(0, seconds - 1);
+        if (next > 0) {
+          setSystemError(`Too many requests. Please retry in ${next} seconds.`);
+        } else {
+          setSystemError('You can retry now.');
+        }
+        return next;
+      });
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [retryAfterSeconds > 0, setSystemError, systemError]);
   if (systemError) {
     return (
       <div
@@ -166,13 +194,19 @@ export default function App() {
         </p>
         <button
           onClick={() => {
+            if (retryAfterSeconds > 0) return;
             useAuthStore.getState().setSystemError(null);
             bootRefreshPromise = null;
             window.location.reload();
           }}
-          style={{ padding: '8px 20px', cursor: 'pointer' }}
+          disabled={retryAfterSeconds > 0}
+          style={{
+            padding: '8px 20px',
+            cursor: retryAfterSeconds > 0 ? 'not-allowed' : 'pointer',
+            opacity: retryAfterSeconds > 0 ? 0.6 : 1,
+          }}
         >
-          Retry
+          {retryAfterSeconds > 0 ? `Retry in ${retryAfterSeconds}s` : 'Retry'}
         </button>
       </div>
     );

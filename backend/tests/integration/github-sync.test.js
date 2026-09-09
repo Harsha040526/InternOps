@@ -204,6 +204,21 @@ describe('GitHub Sync API Contract Tests', () => {
     });
   });
 
+  describe('GET /api/v1/github/issues', () => {
+    test('lists synced issues without selecting a nonexistent task status column', async () => {
+      const res = await inject('GET', '/api/v1/github/issues?limit=20', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      expect(res.statusCode).toBe(200);
+      const body = JSON.parse(res.body);
+      expect(Array.isArray(body.tasks)).toBe(true);
+      expect(typeof body.total).toBe('number');
+      expect(body.page).toBe(1);
+      expect(body.limit).toBe(20);
+    });
+  });
   describe('GET /api/v1/github/status', () => {
     test('should return GitHub sync status for an admin', async () => {
       const res = await inject('GET', '/api/v1/github/status', {

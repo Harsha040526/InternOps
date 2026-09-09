@@ -230,6 +230,7 @@ const COORDINATED_LOADING_ROUTES = new Set([
   '/bulk-generate',
   '/canva-templates',
   '/feature-flags',
+  '/github-sync',
   '/tasks',
   '/notifications',
   '/sessions',

@@ -10,6 +10,20 @@ const login = read('src/pages/Login.jsx');
 const guard = read('src/components/RoleGuard.jsx');
 
 describe('refresh loading and route preservation contract', () => {
+  it('handles startup rate limiting without reporting a service outage', () => {
+    expect(app).toContain('status === 429');
+    expect(app).toContain("err.response?.headers?.['retry-after']");
+    expect(app).toContain(
+      'Too many requests. Please retry in ${retryAfter} seconds.'
+    );
+    expect(app).toContain(
+      'const [retryAfterSeconds, setRetryAfterSeconds] = useState(0);'
+    );
+    expect(app).toContain('disabled={retryAfterSeconds > 0}');
+    expect(app).toContain(
+      "retryAfterSeconds > 0 ? `Retry in ${retryAfterSeconds}s` : 'Retry'"
+    );
+  });
   it('uses the full branded loader only when no cached user exists', () => {
     expect(app).toContain('if (!hydrated && !useAuthStore.getState().user)');
     expect(app).not.toContain('if (!hydrated && useAuthStore.getState().user)');
@@ -240,6 +254,78 @@ describe('refresh loading and route preservation contract', () => {
     expect(canvaTemplates).toContain('flex flex-col gap-3 sm:flex-row');
   });
 
+  it('coordinates GitHub Sync loading and responsive overview', () => {
+    const layout = read('src/layouts/DashboardLayout.jsx');
+    const githubSync = read('src/pages/admin/GithubSync.jsx');
+    expect(layout).toContain("'/github-sync'");
+    expect(githubSync).toContain(
+      'useRouteInitialLoading(githubSyncInitialLoading)'
+    );
+    expect(githubSync).toContain(
+      '(statusLoading && !status) || (countsLoading && !counts)'
+    );
+    expect(githubSync).toContain('setCopied(true)');
+    expect(githubSync).toContain(
+      'window.setTimeout(() => setCopied(false), 1600)'
+    );
+    expect(githubSync).toContain('LOG_STATUS_CLASSES');
+    expect(githubSync).not.toContain('text-${statusColor}-500');
+    expect(githubSync).toContain(
+      'flex w-fit max-w-full gap-1 overflow-x-auto rounded-2xl'
+    );
+    expect(githubSync).toContain('flex shrink-0 items-center gap-2');
+    expect(githubSync).toContain('grid grid-cols-1 gap-2 sm:grid-cols-3');
+    expect(
+      githubSync.match(
+        /inline-flex items-center justify-center gap-2 whitespace-nowrap/g
+      )
+    ).toHaveLength(7);
+    expect(githubSync).toContain('STATUS_CARD_TONES');
+    expect(githubSync).toContain(
+      'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-100'
+    );
+    expect(githubSync).toContain('dark:bg-indigo-950/60 dark:text-indigo-300');
+    expect(githubSync).toContain(
+      'dark:bg-emerald-950/60 dark:text-emerald-300'
+    );
+    expect(githubSync).toContain('dark:bg-violet-950/60 dark:text-violet-300');
+    expect(githubSync).not.toContain('var(--${color}-50, #f0fdf4)');
+    expect(githubSync).toContain('isError: issuesError');
+    expect(githubSync).toContain('error: issuesRequestError');
+    expect(githubSync).toContain('refetch: refetchIssues');
+    expect(githubSync).toContain('_suppressGlobalError: true');
+    expect(githubSync).toContain('retry: false');
+    expect(githubSync).toContain('Could not load synced issues');
+    expect(githubSync).toContain('onClick={() => refetchIssues()}');
+    expect(githubSync).toContain(
+      'renders a single-request error state for Synced Issues'
+    );
+    expect(skeleton).toContain(
+      'h-11 w-11 shrink-0 rounded-xl bg-slate-300/80 dark:bg-slate-600/80'
+    );
+    expect(skeleton).not.toContain('dark:bg-violet-700/70');
+    expect(skeleton).toContain('function GithubSyncSkeleton()');
+    expect(skeleton).toContain("kind === 'github-sync'");
+    expect(skeleton).toContain('<GithubSyncSkeleton />');
+    expect(skeleton).toContain(
+      'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'
+    );
+    expect(skeleton).toContain(
+      'mb-6 flex w-fit max-w-full gap-1 overflow-x-auto rounded-2xl'
+    );
+    expect(skeleton).toContain('h-[112px] p-5');
+    expect(skeleton).toContain('flex h-full items-center gap-3');
+    expect(skeleton).toContain("'w-[120px]'");
+    expect(skeleton).toContain("'w-[117px]'");
+    expect(skeleton).toContain("'w-[135px]'");
+    expect(skeleton).toContain("'w-[150px]'");
+    expect(skeleton).toContain("'w-[143px]'");
+    expect(skeleton).toContain('mt-2 h-7 w-24 rounded-lg');
+    expect(skeleton).toContain('mt-1 h-4 w-32 max-w-full rounded-md');
+    expect(skeleton).toContain('h-[97px] p-5');
+    expect(skeleton).toContain('flex h-full flex-col justify-center');
+    expect(skeleton).toContain('h-[173px] p-5');
+  });
   it('coordinates Feature Flags loading and matches its deployment-control workspace', () => {
     const layout = read('src/layouts/DashboardLayout.jsx');
     const featureFlags = read('src/pages/admin/FeatureFlags.jsx');
