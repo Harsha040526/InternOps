@@ -308,7 +308,7 @@ def test_chat_uses_cache_for_identical_requests(client, monkeypatch):
     async def fake_get_cached(key):
         return cache.get(key)
 
-    async def fake_set_cached(key, value):
+    async def fake_set_cached(key, value, *args, **kwargs):
         cache[key] = value
 
     monkeypatch.setattr(
