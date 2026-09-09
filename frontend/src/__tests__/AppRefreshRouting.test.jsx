@@ -307,6 +307,16 @@ describe('refresh loading and route preservation contract', () => {
     expect(skeleton).toContain('function GithubSyncSkeleton()');
     expect(skeleton).toContain("kind === 'github-sync'");
     expect(skeleton).toContain('<GithubSyncSkeleton />');
+    const githubSyncSkeleton = skeleton.slice(
+      skeleton.indexOf('function GithubSyncSkeleton()'),
+      skeleton.indexOf('function FeatureFlagsSkeleton()')
+    );
+    expect(githubSyncSkeleton).toContain('grid-cols-1');
+    expect(githubSyncSkeleton).toContain('sm:grid-cols-3');
+    expect(githubSyncSkeleton).toContain('lg:flex');
+    expect(githubSyncSkeleton).toContain('lg:w-[138px]');
+    expect(githubSyncSkeleton).toContain('lg:w-[110px]');
+    expect(githubSyncSkeleton).toContain('lg:w-[124px]');
     expect(skeleton).toContain(
       'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'
     );

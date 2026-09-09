@@ -2376,7 +2376,7 @@ function GithubSyncSkeleton() {
             <Block className="mt-3 h-5 w-[500px] max-w-[72vw] rounded-md" />
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-2 lg:-mt-2 lg:ml-auto lg:flex lg:justify-end">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 lg:-mt-2 lg:ml-auto lg:flex lg:justify-end">
           <Block className="h-[37px] w-full rounded-xl lg:w-[138px]" />
           <Block className="h-[37px] w-full rounded-xl lg:w-[110px]" />
           <Block className="h-[37px] w-full rounded-xl lg:w-[124px]" />
