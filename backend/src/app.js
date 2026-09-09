@@ -174,7 +174,7 @@ app.register(require('fastify-raw-body'), {
   field: 'rawBody',
   global: false,
   encoding: 'utf8',
-  runFirst: true
+  runFirst: true,
 });
 
 app.register(require('@fastify/compress'), {
