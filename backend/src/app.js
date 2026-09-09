@@ -98,7 +98,7 @@ app.get(
 app.get(
   '/health/detailed',
   {
-    preHandler: [authenticate, rbac('ADMIN')],
+    preHandler: [auth, rbac('ADMIN')],
     config: {
       rateLimit: false,
     },
@@ -168,6 +168,13 @@ app.register(require('@fastify/helmet'), {
       frameAncestors: ["'none'"],
     },
   },
+});
+
+app.register(require('fastify-raw-body'), {
+  field: 'rawBody',
+  global: false,
+  encoding: 'utf8',
+  runFirst: true
 });
 
 app.register(require('@fastify/compress'), {
