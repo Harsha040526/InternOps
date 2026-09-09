@@ -10,6 +10,13 @@ const login = read('src/pages/Login.jsx');
 const guard = read('src/components/RoleGuard.jsx');
 
 describe('refresh loading and route preservation contract', () => {
+  it('does not show the dashboard skeleton while public auth pages load', () => {
+    const app = read('src/App.jsx');
+    expect(app).toContain(
+      'return <Suspense fallback={null}>{children}</Suspense>'
+    );
+  });
+
   it('handles startup rate limiting without reporting a service outage', () => {
     expect(app).toContain('status === 429');
     expect(app).toContain("err.response?.headers?.['retry-after']");
@@ -480,8 +487,12 @@ describe('refresh loading and route preservation contract', () => {
     expect(home).not.toContain('Loading dashboard...');
   });
   it('uses the route skeleton for first-time lazy page loading', () => {
-    expect(app).toContain('function PageLoader()');
-    expect(app).toContain('return <RouteRefreshSkeleton />;');
+    const layout = read('src/layouts/DashboardLayout.jsx');
+    const coordinator = read('src/components/loading/RouteInitialLoading.jsx');
+    expect(layout).toContain('<Suspense fallback={<RouteRefreshSkeleton />}>');
+    expect(coordinator).toContain(
+      '{loading ? <RouteRefreshSkeleton /> : null}'
+    );
     expect(skeleton).toMatch(/return\s+'task-detail'/);
     expect(skeleton).toMatch(/kind\s*===\s*'meetings'/);
     expect(skeleton).toMatch(/kind\s*===\s*'analytics'/);
@@ -527,7 +538,7 @@ describe('refresh loading and route preservation contract', () => {
     expect(app).toContain('path="/login" element={<Login />}');
     expect(app).toContain('function PublicLazyPage({ children })');
     expect(app).toContain(
-      'return <Suspense fallback={<PageLoader />}>{children}</Suspense>;'
+      'return <Suspense fallback={null}>{children}</Suspense>;'
     );
   });
   it('matches the real Dashboard hierarchy and card-specific loading shapes', () => {

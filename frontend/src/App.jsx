@@ -15,7 +15,6 @@ import ErrorBoundary from './components/ErrorBoundary';
 const HR = lazy(() => import('./pages/HR'));
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
-import RouteRefreshSkeleton from './components/loading/RouteRefreshSkeleton';
 
 // Lazy load page components
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
@@ -55,11 +54,8 @@ const ProjectsPage = lazy(() => import('./pages/admin/ProjectsPage'));
 const ProjectDetailPage = lazy(() => import('./pages/admin/ProjectDetailPage'));
 const TaskDetails = lazy(() => import('./pages/admin/TaskDetails'));
 
-function PageLoader() {
-  return <RouteRefreshSkeleton />;
-}
 function PublicLazyPage({ children }) {
-  return <Suspense fallback={<PageLoader />}>{children}</Suspense>;
+  return <Suspense fallback={null}>{children}</Suspense>;
 }
 
 let bootRefreshPromise = null;
