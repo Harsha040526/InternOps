@@ -55,7 +55,7 @@ def test_chat_endpoint_rejects_injection_attempt(monkeypatch):
         async def expire(self, key, seconds):
             pass
     fake_redis = FakeRedis()
-    monkeypatch.setattr(rate_limit_module, "get_redis_client", lambda: fake_redis)
+    monkeypatch.setattr("app.core.rate_limiter.get_redis", lambda: fake_redis)
 
     client = TestClient(app, raise_server_exceptions=False)
 

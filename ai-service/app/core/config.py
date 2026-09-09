@@ -73,7 +73,7 @@ RATE_LIMIT_PER_MINUTE = int(
 SUPPORTED_PROVIDERS = {"gemini", "groq", "openai", "anthropic", "deepseek", "huggingface"}
 
 DEFAULT_MODELS = {
-    "gemini": "gemini-2.5-flash",
+    "gemini": "gemini-2.0-flash",
     "groq": "llama-3.3-70b-versatile",
     "openai": "gpt-4o-mini",
     "anthropic": "claude-3-5-sonnet-latest",
