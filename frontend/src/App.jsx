@@ -25,6 +25,7 @@ const Attendance = lazy(() => import('./pages/Attendance'));
 const Ratings = lazy(() => import('./pages/Ratings'));
 const Team = lazy(() => import('./pages/Team'));
 const Profile = lazy(() => import('./pages/Profile'));
+const Requests = lazy(() => import('./pages/Requests'));
 const Sessions = lazy(() => import('./pages/Sessions'));
 const Meetings = lazy(() => import('./pages/Meetings'));
 const Notifications = lazy(() => import('./pages/Notifications'));
@@ -302,6 +303,7 @@ export default function App() {
           />
 
           <Route path="profile" element={<Profile />} />
+          <Route path="requests" element={<Requests />} />
           <Route path="sessions" element={<Sessions />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="assistant" element={<InternOpsAssistant />} />
