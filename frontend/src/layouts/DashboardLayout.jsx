@@ -41,6 +41,7 @@ import {
   useMemo,
   useCallback,
   memo,
+  lazy,
   Suspense,
 } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -53,10 +54,11 @@ import useAuthStore from '../store/auth';
 import useFeatureFlagsStore from '../store/featureFlags';
 import { QUERY_KEYS } from '../constants/queryKeys';
 import { ROLE_LABEL } from '../constants/roles';
-import FloatingChatbot from '../components/FloatingChatbot';
+const FloatingChatbot = lazy(() => import('../components/FloatingChatbot'));
 import RouteRefreshSkeleton from '../components/loading/RouteRefreshSkeleton';
 import RouteInitialLoading from '../components/loading/RouteInitialLoading';
 
+const FLOATING_CHATBOT_ROLES = ['ADMIN', 'SENIOR_TL', 'TL'];
 const MANAGER_ROLES = ['ADMIN', 'SENIOR_TL', 'TL', 'CAPTAIN'];
 const ADMIN_AND_SENIOR_TL_ROLES = ['ADMIN', 'SENIOR_TL'];
 const ADMIN_ONLY_ROLES = ['ADMIN'];
@@ -368,6 +370,7 @@ export default function DashboardLayout() {
   }, [accessToken, queryClient, user?.mustChangePassword]);
 
   const role = user?.role;
+  const canUseFloatingChatbot = FLOATING_CHATBOT_ROLES.includes(role);
   const flags = useFeatureFlagsStore((s) => s.flags);
   const flagsLoaded = useFeatureFlagsStore((s) => s.loaded);
   const SIDEBAR_KEY = 'sidebar_scroll';
@@ -906,7 +909,11 @@ export default function DashboardLayout() {
         onCancel={() => setShowLogoutConfirm(false)}
         danger={true}
       />
-      {loc.pathname !== '/profile' && <FloatingChatbot />}
+      {loc.pathname !== '/profile' && canUseFloatingChatbot && (
+        <Suspense fallback={null}>
+          <FloatingChatbot />
+        </Suspense>
+      )}
     </div>
   );
 }
