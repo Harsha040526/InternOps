@@ -218,3 +218,33 @@ def test_ai_route_integration_cache_hit_and_miss(monkeypatch):
     assert b2["content"] == "Response #1"
     assert b2["cached"] is True
     assert calls == 1
+
+
+@pytest.mark.asyncio
+async def test_set_cached_uses_configured_ttl(monkeypatch):
+    calls = {}
+
+    class FakeRedis:
+        async def set(self, key, value, ex=None):
+            calls["key"] = key
+            calls["value"] = value
+            calls["ttl"] = ex
+
+    monkeypatch.setattr(
+        "app.core.cache.get_redis",
+        lambda: FakeRedis(),
+    )
+
+    monkeypatch.setattr(
+        "app.core.cache.settings.AI_CACHE_TTL",
+        300,
+    )
+
+    await set_cached(
+        "test-key",
+        {"response": "hello"},
+    )
+
+    assert calls["key"] == "test-key"
+    assert calls["value"] == '{"response": "hello"}'
+    assert calls["ttl"] == 300
