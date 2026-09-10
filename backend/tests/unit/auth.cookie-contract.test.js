@@ -15,13 +15,13 @@ describe('authentication cookie contract', () => {
     'utf8'
   );
 
-  test('uses one cookie configuration for refresh and CSRF', () => {
+    test('uses one cookie configuration for refresh and CSRF', () => {
     expect(config).toContain('cookie: buildCookieConfig()');
+    expect(config).toContain('maxAge: refreshMaxAge');
     expect(routes).toContain('...config.cookie');
     expect(csrf).toContain('secure: config.cookie.secure');
     expect(csrf).toContain('sameSite: config.cookie.sameSite');
   });
-
   test('reports a missing refresh cookie without token values', () => {
     expect(routes).toContain("code: 'REFRESH_COOKIE_MISSING'");
     expect(routes).toContain('cookieNames: Object.keys(req.cookies || {})');
