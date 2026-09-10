@@ -31,6 +31,7 @@ import {
   X,
   PanelLeftClose,
   PanelLeftOpen,
+  Inbox,
 } from 'lucide-react';
 
 import {
@@ -107,6 +108,7 @@ const nav = [
   },
   { path: '/notifications', label: 'Notifications', icon: Bell },
   { path: '/profile', label: 'Profile', icon: User },
+  { path: '/requests', label: 'Requests', icon: Inbox },
   { path: '/sessions', label: 'Sessions', icon: Shield },
   {
     path: '/internops',

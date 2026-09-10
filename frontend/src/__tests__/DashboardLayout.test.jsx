@@ -185,6 +185,10 @@ describe('DashboardLayout Component Tests', () => {
       screen.getAllByRole('link', { name: 'Notifications' })[0]
     ).toHaveAttribute('href', '/notifications');
     expect(screen.getByText('Profile')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Requests' })).toHaveAttribute(
+      'href',
+      '/requests'
+    );
     expect(screen.getByText('Sessions')).toBeInTheDocument();
 
     // Interns should not see administrative options
