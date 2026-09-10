@@ -355,7 +355,7 @@ export default function GithubSync() {
     refetch: refetchIssues,
   } = useQuery({
     queryKey: ['github-synced-issues'],
-        queryFn: ({ signal }) =>
+    queryFn: ({ signal }) =>
       api
         .get('/github/issues?limit=20', {
           signal,
