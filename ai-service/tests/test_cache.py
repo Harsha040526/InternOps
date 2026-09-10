@@ -180,12 +180,12 @@ async def test_provider_failure_not_cached():
 
 def test_ai_route_integration_cache_hit_and_miss(monkeypatch):
     import app.api.ai_routes as ai_routes_module
-    from app.core.rate_limit import chat_rate_limiter
+    from app.core.rate_limiter import chat_rate_limiter
 
     app = FastAPI()
     app.include_router(router)
     app.dependency_overrides[get_current_user] = lambda: User(id="integration_user", roles=["ADMIN"])
-    chat_rate_limiter._hits.clear()
+    app.dependency_overrides[chat_rate_limiter.check_rate_limit] = lambda: None
     client = TestClient(app)
 
     calls = 0

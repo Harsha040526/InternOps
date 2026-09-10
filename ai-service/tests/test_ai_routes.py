@@ -16,7 +16,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from app.api.ai_routes import router
-from app.core.rate_limit import chat_rate_limiter
+from app.core.rate_limiter import chat_rate_limiter
 
 
 from app.core.auth import get_current_user, User
@@ -41,12 +41,11 @@ def client(monkeypatch):
 
     # Force the limiter to use our fake client instead of a real Redis connection.
     fake_redis = FakeRedis()
-    monkeypatch.setattr(rate_limit_module, "redis_client", fake_redis)
+    monkeypatch.setattr(rate_limit_module, "get_redis", lambda: fake_redis)
 
     app = FastAPI()
     app.include_router(router)
     app.dependency_overrides[get_current_user] = lambda: User(id="test_user", roles=["ADMIN"])
-    chat_rate_limiter._hits.clear()
     return TestClient(app, raise_server_exceptions=False)
 
 

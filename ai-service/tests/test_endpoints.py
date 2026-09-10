@@ -10,6 +10,8 @@ import respx
 from httpx import ASGITransport, AsyncClient
 
 from app.core.rate_limiter import ai_rate_limiter
+from app.core import rate_limiter as rate_limit_module
+from unittest.mock import AsyncMock
 from app.core.auth import get_current_user, User
 from app.main import app
 
@@ -19,7 +21,7 @@ OPENAI_URL = "https://api.openai.com/v1/chat/completions"
 
 @pytest.fixture(autouse=True)
 def setup_test_env(monkeypatch):
-    """Ensure rate limiter state is completely clean before and after every test, and inject mock user."""
+    """Ensure rate limiter state is clean before and after every test, and inject mock user."""
     class FakeRedis:
         def __init__(self):
             self.counts = {}
@@ -30,7 +32,8 @@ def setup_test_env(monkeypatch):
             pass
 
     fake_redis = FakeRedis()
-    monkeypatch.setattr("app.core.rate_limiter.get_redis", lambda: fake_redis)
+    monkeypatch.setattr(rate_limit_module, "get_redis", lambda: fake_redis)
+    ai_rate_limiter.requests_per_minute = 60
     app.dependency_overrides[get_current_user] = lambda: User(id="test_user", roles=["ADMIN"])
     yield
     app.dependency_overrides.clear()
