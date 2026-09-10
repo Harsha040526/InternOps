@@ -40,16 +40,14 @@ describe('hierarchy recursive CTE safety', () => {
     expect(sql).toContain('ARRAY[id] AS path');
     expect(sql).toContain('NOT u.id = ANY(chain.path)');
     expect(sql).toContain('chain.depth < $3');
-    expect(params).toEqual([
-      'target-id',
-      'requester-id',
-      MAX_HIERARCHY_DEPTH,
-    ]);
+    expect(params).toEqual(['target-id', 'requester-id', MAX_HIERARCHY_DEPTH]);
   });
 
   test('getFullTeam uses deterministic rank ordering and cycle guards', async () => {
     pool.query
-      .mockResolvedValueOnce({ rows: [{ role: 'TL', department_id: 'dept-1' }] })
+      .mockResolvedValueOnce({
+        rows: [{ role: 'TL', department_id: 'dept-1' }],
+      })
       .mockResolvedValueOnce({ rows: [{ total: 1 }] })
       .mockResolvedValueOnce({ rows: [] });
 
@@ -63,7 +61,9 @@ describe('hierarchy recursive CTE safety', () => {
     const [dataSql, dataParams] = pool.query.mock.calls[2];
     expect(dataSql).toContain('AS structural_rank');
     expect(dataSql).toContain('ORDER BY');
-    expect(dataSql).toContain('LOWER(COALESCE(NULLIF(TRIM(full_name), \'\'), email))');
+    expect(dataSql).toContain(
+      "LOWER(COALESCE(NULLIF(TRIM(full_name), ''), email))"
+    );
     expect(dataParams).toEqual(['manager-id', 25, 25, MAX_HIERARCHY_DEPTH]);
   });
 
@@ -144,12 +144,7 @@ describe('hierarchy recursive CTE safety', () => {
     expect(sql).toContain('capped_descendants AS');
     expect(sql).toContain('LIMIT $3');
     expect(sql).toContain('mapping_limit_exceeded');
-    expect(params).toEqual([
-      'department-id',
-      MAX_HIERARCHY_DEPTH,
-      51,
-      50,
-    ]);
+    expect(params).toEqual(['department-id', MAX_HIERARCHY_DEPTH, 51, 50]);
   });
 
   test('updateMemberManager blocks cycles with a bounded descendant CTE', async () => {

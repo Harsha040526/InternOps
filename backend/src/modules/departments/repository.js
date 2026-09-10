@@ -102,12 +102,7 @@ async function getDepartmentTeams(departmentId, options = {}) {
      ORDER BY ${roleRankSql('l')},
               LOWER(COALESCE(NULLIF(TRIM(l.full_name), ''), l.id::text)),
               l.id`,
-    [
-      departmentId,
-      MAX_HIERARCHY_DEPTH,
-      cappedHierarchyLimit,
-      hierarchyLimit,
-    ]
+    [departmentId, MAX_HIERARCHY_DEPTH, cappedHierarchyLimit, hierarchyLimit]
   );
   if (rows.some((row) => row.mapping_limit_exceeded)) {
     const error = new Error('Department hierarchy mapping limit exceeded');
