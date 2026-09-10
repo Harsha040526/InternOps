@@ -54,68 +54,66 @@ export default function PerformanceIntelligence() {
   }, [selectedInternId]);
 
   const fetchInterns = async () => {
-  try {
-    const res = await api.get('/team/members?role=INTERN');
+    try {
+      const res = await api.get('/team/members?role=INTERN');
 
-    const data = res.data;
-    const list = data.members || data || [];
+      const data = res.data;
+      const list = data.members || data || [];
 
-    setInterns(list);
+      setInterns(list);
 
-    if (list.length > 0) {
-      setSelectedInternId(list[0].id);
-    } else if (currentUser.id) {
-      setSelectedInternId(currentUser.id);
+      if (list.length > 0) {
+        setSelectedInternId(list[0].id);
+      } else if (currentUser.id) {
+        setSelectedInternId(currentUser.id);
+      }
+    } catch (err) {
+      console.warn('Using demo intern list fallback:', err);
+      setSelectedInternId(currentUser.id || 'demo-user');
     }
-  } catch (err) {
-    console.warn('Using demo intern list fallback:', err);
-    setSelectedInternId(currentUser.id || 'demo-user');
-  }
-};
+  };
 
   const fetchReviewData = async (internId) => {
     setLoading(true);
-  setError(null);
+    setError(null);
 
-  try {
-    const [reviewRes, historyRes] = await Promise.all([
-      api.get(`/ai/performance/${internId}`),
-      api.get(`/ai/performance/${internId}/history`),
-    ]);
+    try {
+      const [reviewRes, historyRes] = await Promise.all([
+        api.get(`/ai/performance/${internId}`),
+        api.get(`/ai/performance/${internId}/history`),
+      ]);
 
-    setReview(reviewRes.data);
-    setHistory(historyRes.data.history || []);
-  } catch (err) {
-    console.warn('API connection offline, rendering local evidence model');
-    setReview(getMockReview(internId));
-    setHistory(getMockHistory());
-  } finally {
-    setLoading(false);
-  }
-};
+      setReview(reviewRes.data);
+      setHistory(historyRes.data.history || []);
+    } catch (err) {
+      console.warn('API connection offline, rendering local evidence model');
+      setReview(getMockReview(internId));
+      setHistory(getMockHistory());
+    } finally {
+      setLoading(false);
+    }
+  };
   const handleGenerateReview = async () => {
-  setGenerating(true);
+    setGenerating(true);
 
-  try {
-    const res = await api.post(
-      `/ai/performance/${selectedInternId}/generate`,
-      {
-        periodStart: new Date(
-          Date.now() - 30 * 86400000
-        ).toISOString(),
-        periodEnd: new Date().toISOString(),
-      }
-    );
+    try {
+      const res = await api.post(
+        `/ai/performance/${selectedInternId}/generate`,
+        {
+          periodStart: new Date(Date.now() - 30 * 86400000).toISOString(),
+          periodEnd: new Date().toISOString(),
+        }
+      );
 
-    setReview(res.data);
-    fetchReviewData(selectedInternId);
-  } catch (err) {
-    console.warn('Generation completed with mock fallback');
-    setReview(getMockReview(selectedInternId));
-  } finally {
-    setGenerating(false);
-  }
-};
+      setReview(res.data);
+      fetchReviewData(selectedInternId);
+    } catch (err) {
+      console.warn('Generation completed with mock fallback');
+      setReview(getMockReview(selectedInternId));
+    } finally {
+      setGenerating(false);
+    }
+  };
 
   const toggleEvidenceDrawer = (recId) => {
     setExpandedEvidence((prev) => ({

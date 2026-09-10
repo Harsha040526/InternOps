@@ -138,9 +138,9 @@ function parseDurationToSeconds(value, fallbackSeconds) {
     return Math.floor(value);
   }
 
-  const match = String(value || '').trim().match(
-    /^(\d+(?:\.\d+)?)\s*(ms|s|m|h|d|w|y)?$/i
-  );
+  const match = String(value || '')
+    .trim()
+    .match(/^(\d+(?:\.\d+)?)\s*(ms|s|m|h|d|w|y)?$/i);
 
   if (!match) return fallbackSeconds;
 
@@ -175,14 +175,9 @@ function buildCookieConfig() {
   const domain = process.env.COOKIE_DOMAIN?.trim() || undefined;
 
   const refreshExpiry =
-    process.env.JWT_REFRESH_EXPIRES_IN ||
-    process.env.JWT_EXPIRES_IN ||
-    '7d';
+    process.env.JWT_REFRESH_EXPIRES_IN || process.env.JWT_EXPIRES_IN || '7d';
 
-  const refreshMaxAge = parseDurationToSeconds(
-    refreshExpiry,
-    7 * 24 * 60 * 60
-  );
+  const refreshMaxAge = parseDurationToSeconds(refreshExpiry, 7 * 24 * 60 * 60);
 
   return {
     secure,

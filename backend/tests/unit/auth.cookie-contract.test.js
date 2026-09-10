@@ -15,7 +15,7 @@ describe('authentication cookie contract', () => {
     'utf8'
   );
 
-    test('uses one cookie configuration for refresh and CSRF', () => {
+  test('uses one cookie configuration for refresh and CSRF', () => {
     expect(config).toContain('cookie: buildCookieConfig()');
     expect(config).toContain('maxAge: refreshMaxAge');
     expect(routes).toContain('...config.cookie');
