@@ -1,4 +1,5 @@
 const service = require('../../src/modules/internops/service');
+const attendanceRepo = require('../../src/modules/attendance/repository');
 
 describe('InternOps Service', () => {
   test('correctly aggregates attendance and ratings', () => {
@@ -155,6 +156,46 @@ describe('InternOps Service', () => {
     ).toEqual({
       minutes: 450,
       seconds: 27000,
+    });
+  });
+
+  test('attendance repository computeAttendanceDuration computes integer minutes and seconds for DB persistence', () => {
+    // Absent & Leave
+    expect(attendanceRepo.computeAttendanceDuration('ABSENT')).toEqual({
+      minutes: 0,
+      seconds: 0,
+    });
+    expect(attendanceRepo.computeAttendanceDuration('LEAVE')).toEqual({
+      minutes: 0,
+      seconds: 0,
+    });
+
+    // Half Day
+    expect(attendanceRepo.computeAttendanceDuration('HALF_DAY')).toEqual({
+      minutes: 240,
+      seconds: 14400,
+    });
+
+    // Standard Full Day Present without arrival time
+    expect(attendanceRepo.computeAttendanceDuration('PRESENT')).toEqual({
+      minutes: 480,
+      seconds: 28800,
+    });
+
+    // Present with arrival time 09:12:00 -> 17:00 - 09:12 = 7h 48m = 468 mins = 28080 secs
+    expect(
+      attendanceRepo.computeAttendanceDuration('PRESENT', '09:12:00')
+    ).toEqual({
+      minutes: 468,
+      seconds: 28080,
+    });
+
+    // Present with arrival time 09:05:00 -> 17:00 - 09:05 = 7h 55m = 475 mins = 28500 secs
+    expect(
+      attendanceRepo.computeAttendanceDuration('PRESENT', '09:05:00')
+    ).toEqual({
+      minutes: 475,
+      seconds: 28500,
     });
   });
 });

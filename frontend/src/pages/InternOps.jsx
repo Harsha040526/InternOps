@@ -323,7 +323,7 @@ export default function InternOps() {
                       : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                   }`}
                 >
-                  {state === 'ALL' ? 'All Roles' : state}
+                  {state === 'ALL' ? 'All Statuses' : state}
                 </button>
               )
             )}
